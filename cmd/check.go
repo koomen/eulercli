@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"crypto/md5"
 	"errors"
 	"fmt"
 	"strconv"
@@ -27,19 +26,21 @@ var checkCmd = &cobra.Command{
 		return util.ValidateProblemStr(args[0])
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		problem, _ := strconv.Atoi(args[0])
+		problemNum, _ := strconv.Atoi(args[0])
 		guess := args[1]
-		hashedGuess := fmt.Sprintf("%x", md5.Sum([]byte(guess)))
-		hashedAnswer := util.GetHashedAnswer(problem)
 
-		red := color.New(color.FgRed).SprintFunc()
-		green := color.New(color.FgGreen).SprintFunc()
+		correctness, err := util.CheckAnswer(problemNum, guess)
+		cobra.CheckErr(err)
 
-		if hashedGuess == hashedAnswer {
-			fmt.Printf("The answer %s for problem %d is %s\n", guess, problem, green("correct"))
-		} else {
-			fmt.Printf("The answer %s for problem %d is %s\n", guess, problem, red("incorrect"))
+		switch correctness {
+		case util.Correct:
+			green := color.New(color.FgGreen).SprintFunc()
+			fmt.Printf("The answer %s for problem %d is %s\n", guess, problemNum, green("correct"))
+		case util.Incorrect:
+			red := color.New(color.FgRed).SprintFunc()
+			fmt.Printf("The answer %s for problem %d is %s\n", guess, problemNum, red("incorrect"))
+		case util.Unknown:
+			fmt.Printf("The answer to problem %d is unknown\n", problemNum)
 		}
-
 	},
 }

@@ -17,9 +17,11 @@ var answerCmd = &cobra.Command{
 	Use:   "answer [problem]",
 	Short: "Return the answer (hashed) to the specified problem",
 	Long:  fmt.Sprintf(`Return the answer (hashed) to the specified problem.`),
-	Args:  util.ValidateProblemArg,
+	Args:  util.ValidateSingleProblemArg,
 	Run: func(cmd *cobra.Command, args []string) {
-		problem, _ := strconv.Atoi(args[0])
-		fmt.Println(util.GetHashedAnswer(problem))
+		problemNum, _ := strconv.Atoi(args[0])
+		problem, err := util.GetProblem(problemNum)
+		cobra.CheckErr(err)
+		fmt.Println(problem.AnswerMD5)
 	},
 }

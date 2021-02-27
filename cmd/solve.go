@@ -17,7 +17,7 @@ var solveCmd = &cobra.Command{
 	Use:   "solve [problem]",
 	Short: "Execute solution for the specified problem",
 	Long:  fmt.Sprintf(`Execute solution for the specified problem.`),
-	Args:  util.ValidateProblemArg,
+	Args:  util.ValidateSingleProblemArg,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("Solve command not implemented")
 	},

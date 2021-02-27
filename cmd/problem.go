@@ -17,9 +17,11 @@ var problemCmd = &cobra.Command{
 	Use:   "problem [problem]",
 	Short: "Return the text of the specified problem",
 	Long:  fmt.Sprintf(`Return the text of the specified problem.`),
-	Args:  util.ValidateProblemArg,
+	Args:  util.ValidateSingleProblemArg,
 	Run: func(cmd *cobra.Command, args []string) {
-		problem, _ := strconv.Atoi(args[0])
-		fmt.Println(util.GetProblemText(problem))
+		problemNum, _ := strconv.Atoi(args[0])
+		problem, err := util.GetProblem(problemNum)
+		cobra.CheckErr(err)
+		fmt.Println(problem.ProblemText)
 	},
 }
