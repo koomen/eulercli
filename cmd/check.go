@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/fatih/color"
+	"github.com/koomen/eulercli/consts"
 	"github.com/koomen/eulercli/util"
 	"github.com/spf13/cobra"
 )
@@ -33,13 +34,13 @@ var checkCmd = &cobra.Command{
 		cobra.CheckErr(err)
 
 		switch correctness {
-		case util.Correct:
+		case consts.Correct:
 			green := color.New(color.FgGreen).SprintFunc()
 			fmt.Printf("The answer %s for problem %d is %s\n", guess, problemNum, green("correct"))
-		case util.Incorrect:
+		case consts.Incorrect:
 			red := color.New(color.FgRed).SprintFunc()
 			fmt.Printf("The answer %s for problem %d is %s\n", guess, problemNum, red("incorrect"))
-		case util.Unknown:
+		case consts.Unknown:
 			fmt.Printf("The answer to problem %d is unknown\n", problemNum)
 		}
 	},

@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+
+	"github.com/koomen/eulercli/consts"
 )
 
 // EulerProblem - a structured type representing a project euler problem
@@ -30,7 +32,7 @@ func (e *MissingProblemError) Error() string {
 // getProblemAndAnswerTextFromFile - extracts problem text from project_euler_problems.txt
 func getProblemAndAnswerTextFromFile(problemNum int) (string, error) {
 	re := regexp.MustCompile(`Problem [0-9]+\s*\=+`)
-	split := re.Split(ProblemSolutionText, -1)
+	split := re.Split(consts.ProblemSolutionText, -1)
 
 	largestSupportedProblemNum := len(split) + 1
 
@@ -80,21 +82,21 @@ func GetProblem(problemNum int) (*EulerProblem, error) {
 }
 
 // CheckAnswer - compares a guess against the answer to a question
-func CheckAnswer(problemNum int, guess string) (Correctness, error) {
+func CheckAnswer(problemNum int, guess string) (consts.Correctness, error) {
 	problem, err := GetProblem(problemNum)
 	if err != nil {
-		return Unknown, err
+		return consts.Unknown, err
 	}
 
-	if problem.AnswerMD5 == MissingAnswerMD5 {
-		return Unknown, nil
+	if problem.AnswerMD5 == consts.MissingAnswerMD5 {
+		return consts.Unknown, nil
 	}
 
 	hashedGuess := fmt.Sprintf("%x", md5.Sum([]byte(guess)))
 
 	if hashedGuess == problem.AnswerMD5 {
-		return Correct, nil
+		return consts.Correct, nil
 	}
 
-	return Incorrect, nil
+	return consts.Incorrect, nil
 }
