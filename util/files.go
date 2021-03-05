@@ -202,7 +202,7 @@ func SyncFiles(src, dst string, overwrite bool, stdin io.Reader) error {
 			return nil
 		}
 		if !overwrite {
-			msg := fmt.Sprintf("Overwrite file %s?", dst)
+			msg := fmt.Sprintf("File %s exists. Overwrite?", dst)
 			if !Confirm(msg, false, stdin, os.Stdout) {
 				// Todo: the user did not confirm; should return (and handle) an error
 				return nil
@@ -236,7 +236,7 @@ func SyncDirs(src, dst string, overwrite bool, stdin io.Reader) error {
 		if err != nil {
 			return err
 		}
-		if path == src {
+		if d.IsDir() {
 			return nil
 		}
 
@@ -245,9 +245,6 @@ func SyncDirs(src, dst string, overwrite bool, stdin io.Reader) error {
 			return err
 		}
 		dstPath := filepath.Join(dst, relPath)
-		if d.IsDir() {
-			return SyncDirs(path, dstPath, overwrite, stdin)
-		}
 		return SyncFiles(path, dstPath, overwrite, stdin)
 	})
 }
