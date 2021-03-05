@@ -12,7 +12,7 @@ const ProblemTextURL = "https://raw.githubusercontent.com/davidcorbin/euler-offl
 const MissingAnswerMD5 = "?"
 
 // ProblemSolutionText - text of problems and solutions
-//go:embed project_euler_problems.txt
+//go:embed assets/project_euler_problems.txt
 var ProblemSolutionText string
 
 // Correctness - type representing three states of "correctness": correct, incorrect, and unknown
@@ -30,7 +30,16 @@ const (
 )
 
 // FilePerm - permissions used for created files
-const FilePerm = 0600
+const FilePerm = 0666
 
 // DirPerm - permissions used for created directories
-const DirPerm = 0700
+const DirPerm = 0766
+
+// DefaultTemplatesDir - default relative path of the templates directory
+const DefaultTemplatesDir = "./templates"
+
+// ZippedRepoURL - URL for downloading a zipped copy of the eulercli repo
+const ZippedRepoURL = "https://github.com/koomen/eulercli/archive/main.zip"
+
+// TempDirPath - path of a directory used to store temporary files
+const TempDirPath = "/tmp/eulercli"
