@@ -10,14 +10,30 @@ import (
 
 // CliName holds name of the CLI executable
 var (
-	CliName  = os.Args[0]
-	Language string
+	CliName   = os.Args[0]
+	Language  string
+	Overwrite bool
 )
 
 // init - Initialize the root command
 func init() {
 	// Add a global language flag
-	rootCmd.PersistentFlags().StringVarP(&Language, "language", "l", "julia", "programming language used to start and solve problems")
+	rootCmd.PersistentFlags().StringVarP(
+		&Language,
+		"language",
+		"l",
+		"julia",
+		"programming language used to start and solve problems (default: julia)",
+	)
+
+	rootCmd.PersistentFlags().BoolVarP(
+		&Overwrite,
+		"overwrite",
+		"o",
+		false,
+		"overwrite existing template or target files (default: false)",
+	)
+	rootCmd.PersistentFlags().Lookup("overwrite").NoOptDefVal = "true"
 
 	// Bind with viper flag to enable reading (and writing) config
 	viper.BindPFlag("language", rootCmd.PersistentFlags().Lookup("language"))
