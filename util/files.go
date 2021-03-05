@@ -24,6 +24,16 @@ func CreateTempDir() error {
 	return os.MkdirAll(consts.TempDirPath, consts.DirPerm)
 }
 
+// CreateFile - Creates a file and its directory if needed
+func CreateFile(path string) (*os.File, error) {
+	// Create the destination directory if it doesn't exist
+	if err := os.MkdirAll(filepath.Dir(path), consts.DirPerm); err != nil {
+		return nil, err
+	}
+
+	return os.Create(path)
+}
+
 // TempPath - Append a relative path onto eulercli's temporary directory
 func TempPath(relPath string) string {
 	return filepath.Join(consts.TempDirPath, relPath)
@@ -37,7 +47,7 @@ func DownloadFile(url, dst string) error {
 	}
 	defer resp.Body.Close()
 
-	out, err := createFile(dst)
+	out, err := CreateFile(dst)
 	if err != nil {
 		return err
 	}

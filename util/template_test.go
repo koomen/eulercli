@@ -1,12 +1,12 @@
 package util
 
 import (
-	"bytes"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
 
+	"github.com/koomen/eulercli/consts"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -20,63 +20,70 @@ const templateStr = "Problem {{.ProblemNum}} answer is {{.AnswerMD5}}"
 const badTemplateStr = "Problem {{.NotAField}} answer is {{.AnswerMD5}}"
 const rendered = "Problem 25 answer is theanswer"
 
-func TestRenderTemplateToString(t *testing.T) {
+func TestRenderToString(t *testing.T) {
 	want := "Problem 25 answer is theanswer"
-	got, err := renderTemplateToString(templateStr, problem)
+	got, err := renderToString(templateStr, problem)
 
 	assert.NoError(t, err)
 	assert.Equal(t, want, got)
 
-	_, err2 := renderTemplateToString(badTemplateStr, problem)
+	_, err2 := renderToString(badTemplateStr, problem)
 	assert.Error(t, err2)
 }
 
-func TestRenderTemplateToFile(t *testing.T) {
-	templatePath := "/tmp/template.txt"
-	assert.NoError(t, ioutil.WriteFile(templatePath, []byte(templateStr), 0766))
-	defer os.Remove(templatePath)
+func TestRenderToFile(t *testing.T) {
+	CreateTempDir()
+	defer RemoveTempDir()
 
-	var dest bytes.Buffer
-	assert.NoError(t, renderTemplateToFile(templatePath, &dest, problem))
+	// Create template file
+	tmpl := TempPath("template.txt")
+	assert.NoError(t, ioutil.WriteFile(tmpl, []byte(templateStr), 0766))
 
-	want, got := rendered, dest.String()
-	assert.Equal(t, want, got)
+	// Render template file to dst.txt
+	dst := TempPath("dst.txt")
+	assert.NoError(t, renderToFile(tmpl, dst, problem))
 
-	assert.NoError(t, ioutil.WriteFile(templatePath, []byte(badTemplateStr), 0766))
-	assert.Error(t, renderTemplateToFile(templatePath, &dest, problem))
+	// Ensure dst.txt contains the expected text
+	want := rendered
+	got, err := os.ReadFile(dst)
+	assert.NoError(t, err)
+	assert.Equal(t, want, string(got))
+
+	// Write a broken template string into template.txt
+	assert.NoError(t, ioutil.WriteFile(tmpl, []byte(badTemplateStr), 0766))
+
+	// renderToFile should error
+	assert.Error(t, renderToFile(tmpl, dst, problem))
 }
 
 func TestRenderFiles(t *testing.T) {
-	templateDir := "/tmp/template"
-	os.RemoveAll(templateDir)
-	var templates map[string]string = map[string]string{
-		"file1.txt": templateStr,
-		"dir{{.ProblemNum}}/file{{.AnswerMD5}}.txt": "Template text",
-	}
+	CreateTempDir()
+	defer RemoveTempDir()
 
-	for path, s := range templates {
-		f, err := createFile(filepath.Join(templateDir, path))
-		assert.NoError(t, err)
-		_, writeErr := f.Write([]byte(s))
-		assert.NoError(t, writeErr)
-		assert.NoError(t, f.Close())
-	}
+	// Create the following files
+	// 		file1.txt
+	//		dir{{.ProblemNum}}/file{{.AnswerMD5}}.txt
+	os.MkdirAll(TempPath("templates/dir{{.ProblemNum}}"), consts.DirPerm)
 
-	destDir := "/tmp/output"
-	os.RemoveAll(destDir)
-	var expected map[string]string = map[string]string{
-		"file1.txt":               rendered,
-		"dir25/filetheanswer.txt": "Template text",
-	}
+	f1 := TempPath("templates/file1.txt")
+	err := os.WriteFile(f1, []byte(templateStr), consts.FilePerm)
+	assert.NoError(t, err)
 
-	assert.NoError(t, RenderFiles(templateDir, destDir, problem, true))
+	f2 := TempPath("templates/dir{{.ProblemNum}}/file{{.AnswerMD5}}.txt")
+	err = os.WriteFile(f2, []byte("Template text"), consts.FilePerm)
+	assert.NoError(t, err)
 
-	for path, want := range expected {
-		got, err := ioutil.ReadFile(filepath.Join(destDir, path))
-		assert.NoError(t, err)
-		assert.Equal(t, want, string(got))
-	}
+	// Render templates
+	dstDir := TempPath("output")
+	assert.NoError(t, RenderTemplateDir(TempPath("templates"), dstDir, problem, true))
 
-	os.RemoveAll(templateDir)
-	os.RemoveAll(destDir)
+	want := rendered
+	got, err := os.ReadFile(filepath.Join(dstDir, "file1.txt"))
+	assert.NoError(t, err)
+	assert.Equal(t, want, string(got))
+
+	want = "Template text"
+	got, err = os.ReadFile(filepath.Join(dstDir, "dir25/filetheanswer.txt"))
+	assert.NoError(t, err)
+	assert.Equal(t, want, string(got))
 }

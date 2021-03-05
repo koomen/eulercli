@@ -50,6 +50,24 @@ func TestTempDir(t *testing.T) {
 
 }
 
+func TestCreateFile(t *testing.T) {
+	CreateTempDir()
+	defer RemoveTempDir()
+
+	f, err := CreateFile(TempPath("dir1/file1.txt"))
+	assert.NoError(t, err)
+
+	_, err = f.WriteString("hello\n")
+	assert.NoError(t, err)
+	assert.NoError(t, f.Close())
+
+	want := "hello\n"
+	got, err := os.ReadFile(TempPath("dir1/file1.txt"))
+	assert.NoError(t, err)
+	assert.Equal(t, want, string(got))
+
+}
+
 func TestDownloadFile(t *testing.T) {
 	CreateTempDir()
 	defer RemoveTempDir()
