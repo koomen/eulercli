@@ -30,10 +30,10 @@ const (
 )
 
 // FilePerm - permissions used for created files
-const FilePerm = 0666
+const FilePerm = 0655
 
 // DirPerm - permissions used for created directories
-const DirPerm = 0766
+const DirPerm = 0755
 
 // DefaultTemplatesDir - default relative path of the templates directory
 const DefaultTemplatesDir = "./templates"

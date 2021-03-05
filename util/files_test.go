@@ -188,6 +188,16 @@ func TestAreChecksumsEqual(t *testing.T) {
 	assert.False(t, got)
 }
 
+func TestUnzip(t *testing.T) {
+	CreateTempDir()
+	defer RemoveTempDir()
+
+	Unzip("test/dir1.zip", TempPath(""))
+
+	assert.FileExists(t, TempPath("dir1/foo.txt"))
+	assert.FileExists(t, TempPath("dir1/dir2/bar.txt"))
+}
+
 func TestSyncFiles(t *testing.T) {
 	CreateTempDir()
 	defer RemoveTempDir()
