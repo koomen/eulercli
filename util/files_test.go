@@ -228,6 +228,7 @@ func TestSyncFiles(t *testing.T) {
 
 func TestSyncDirs(t *testing.T) {
 	CreateTempDir()
+	defer RemoveTempDir()
 
 	var stdin bytes.Buffer
 
