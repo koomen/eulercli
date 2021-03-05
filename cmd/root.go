@@ -43,7 +43,7 @@ func init() {
 		false,
 		"verbose mode (default: false)",
 	)
-	rootCmd.PersistentFlags().Lookup("verbose").NoOptDefVal = "false"
+	rootCmd.PersistentFlags().Lookup("verbose").NoOptDefVal = "true"
 
 	// Bind with viper flag to enable reading (and writing) config
 	viper.BindPFlag("language", rootCmd.PersistentFlags().Lookup("language"))
