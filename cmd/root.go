@@ -13,6 +13,7 @@ var (
 	CliName   = os.Args[0]
 	Language  string
 	Overwrite bool
+	Verbose   bool
 )
 
 // init - Initialize the root command
@@ -34,6 +35,15 @@ func init() {
 		"overwrite existing template or target files (default: false)",
 	)
 	rootCmd.PersistentFlags().Lookup("overwrite").NoOptDefVal = "true"
+
+	rootCmd.PersistentFlags().BoolVarP(
+		&Verbose,
+		"verbose",
+		"v",
+		false,
+		"verbose mode (default: false)",
+	)
+	rootCmd.PersistentFlags().Lookup("verbose").NoOptDefVal = "false"
 
 	// Bind with viper flag to enable reading (and writing) config
 	viper.BindPFlag("language", rootCmd.PersistentFlags().Lookup("language"))

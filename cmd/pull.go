@@ -31,7 +31,9 @@ var pullCmd = &cobra.Command{
 		cobra.CheckErr(err)
 
 		// Unzip the repository
-		fmt.Printf("Unzipping %s\n", zippedRepo)
+		if Verbose {
+			fmt.Printf("Unzipping %s\n", zippedRepo)
+		}
 		err = util.Unzip(zippedRepo, util.TempPath(""))
 		cobra.CheckErr(err)
 
@@ -39,7 +41,9 @@ var pullCmd = &cobra.Command{
 		unzippedRepo := util.TempPath(fmt.Sprintf("%s-%s", repo, branch))
 		tmplDir := filepath.Join(unzippedRepo, "templates")
 		dst := "./templates"
-		fmt.Printf("Syncing %s to ./templates\n", tmplDir)
+		if Verbose {
+			fmt.Printf("Syncing %s to ./templates\n", tmplDir)
+		}
 		err = util.SyncDirs(tmplDir, dst, false, os.Stdin)
 		cobra.CheckErr(err)
 		fmt.Printf("Successfully pulled template solution files to ./templates\n")
