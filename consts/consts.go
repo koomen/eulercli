@@ -11,9 +11,13 @@ const ProblemTextURL = "https://raw.githubusercontent.com/davidcorbin/euler-offl
 // MissingAnswerMD5 - string used whenever a hashed answer cannot be found
 const MissingAnswerMD5 = "?"
 
-// ProblemSolutionText - text of problems and solutions
+// ProblemsText - Embedded document with many Project Euler problems
 //go:embed assets/project_euler_problems.txt
-var ProblemSolutionText string
+var ProblemsText string
+
+// SolutionsText - Embedded document with many Project Euler solutions
+//go:embed assets/Solutions.md
+var SolutionsText string
 
 // Correctness - type representing three states of "correctness": correct, incorrect, and unknown
 type Correctness int

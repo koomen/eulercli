@@ -20,31 +20,38 @@ func TestMissingProblemError(t *testing.T) {
 	assert.Equal(t, want, got)
 }
 
-func TestGetProblemAndAnswerTextFromFile(t *testing.T) {
-	var problemsAndAnswersText map[int]string = map[int]string{
+func TestGetProblemText(t *testing.T) {
+	var problems map[int]string = map[int]string{
 		1:   "If we list all the natural numbers",
 		469: "In a room N chairs are placed around a round table.",
 	}
 
-	for problemNum, substr := range problemsAndAnswersText {
-		got, err := getProblemAndAnswerTextFromFile(problemNum)
+	for problemNum, substr := range problems {
+		got, err := getProblemText(problemNum)
 		assert.True(t, strings.Contains(got, substr))
 		assert.NoError(t, err)
 	}
 
 	// Test error conditition
-	_, err := getProblemAndAnswerTextFromFile(1_000_000)
+	_, err := getProblemText(1_000_000)
 	assert.Error(t, err)
 }
 
-func TestExtractProblemAndAnswerFromText(t *testing.T) {
-	text := "\n   line1\n      line2\n\n  Answer: 3c2b641262880db5b735cfa4d4c957bc  "
+func TestGetAnswer(t *testing.T) {
+	var answers map[int]string = map[int]string{
+		1:   "233168",
+		469: "0.56766764161831",
+	}
 
-	wantProb, wantAns := "line1\n   line2", "3c2b641262880db5b735cfa4d4c957bc"
-	gotProb, gotAns := extractProblemAndAnswerFromText(text)
+	for problemNum, want := range answers {
+		got, err := getAnswer(problemNum)
+		assert.NoError(t, err)
+		assert.Equal(t, want, got)
+	}
 
-	assert.Equal(t, wantProb, gotProb)
-	assert.Equal(t, wantAns, gotAns)
+	// Test error condition
+	_, err := getAnswer(1_000_000)
+	assert.Error(t, err)
 }
 
 func TestGetProblem(t *testing.T) {
@@ -56,6 +63,7 @@ func TestGetProblem(t *testing.T) {
 				"\n" +
 				"Find the sum of all the multiples of 3 or 5 below 1000."),
 			AnswerMD5: "e1edf9d1967ca96767dcc2b2d6df69f4",
+			Answer:    "233168",
 		},
 		469: {
 			ProblemNum: 469,
@@ -73,6 +81,7 @@ func TestGetProblem(t *testing.T) {
 				"Find E(10^18). Give your answer rounded to fourteen decimal places in the\n" +
 				"form 0.abcdefghijklmn."),
 			AnswerMD5: "3c2b641262880db5b735cfa4d4c957bc",
+			Answer:    "0.56766764161831",
 		},
 	}
 
