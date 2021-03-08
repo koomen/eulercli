@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/koomen/eulercli/consts"
 	"github.com/koomen/eulercli/util"
 	"github.com/spf13/cobra"
 )
@@ -16,8 +17,8 @@ func init() {
 // pullCmd
 var pullCmd = &cobra.Command{
 	Use:   "pull",
-	Short: "Download solution templates to ./templates",
-	Long:  fmt.Sprintf("Download solution templates to ./templates"),
+	Short: fmt.Sprintf("Download solution templates to %s", consts.DefaultTemplatesDir),
+	Long:  fmt.Sprintf("Download solution templates to %s", consts.DefaultTemplatesDir),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		util.CreateTempDir()
 		defer util.RemoveTempDir()
@@ -44,7 +45,7 @@ var pullCmd = &cobra.Command{
 		// Sync the templates directory to the working directory
 		unzippedRepo := util.TempPath(fmt.Sprintf("%s-%s", repo, branch))
 		tmplDir := filepath.Join(unzippedRepo, "templates")
-		dst := "./templates"
+		dst := fmt.Sprintf("%s", consts.DefaultTemplatesDir)
 		if Verbose {
 			fmt.Fprintf(cmd.OutOrStdout(), "Syncing %s to %s\n", tmplDir, dst)
 		}
@@ -52,7 +53,7 @@ var pullCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		fmt.Fprintf(cmd.OutOrStdout(), "Successfully pulled template solution files to ./templates\n")
+		fmt.Fprintf(cmd.OutOrStdout(), "Successfully pulled template solution files to %s\n", dst)
 		return nil
 	},
 }
