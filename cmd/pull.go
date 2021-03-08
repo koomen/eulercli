@@ -18,34 +18,41 @@ var pullCmd = &cobra.Command{
 	Use:   "pull",
 	Short: "Download solution templates to ./templates",
 	Long:  fmt.Sprintf("Download solution templates to ./templates"),
-	Run: func(cmd *cobra.Command, args []string) {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		util.CreateTempDir()
 		defer util.RemoveTempDir()
 
 		owner, repo, branch := "koomen", "eulercli", "main"
 
-		fmt.Printf("Downloading templates from https://github.com/%s/%s\n", owner, repo)
+		fmt.Fprintf(cmd.OutOrStdout(), "Downloading templates from https://github.com/%s/%s\n", owner, repo)
 
 		zippedRepo := util.TempPath(fmt.Sprintf("%s-%s.zip", repo, branch))
 		err := util.DownloadRepo(owner, repo, branch, zippedRepo)
-		cobra.CheckErr(err)
+		if err != nil {
+			return err
+		}
 
 		// Unzip the repository
 		if Verbose {
-			fmt.Printf("Unzipping %s\n", zippedRepo)
+			fmt.Fprintf(cmd.OutOrStdout(), "Unzipping %s\n", zippedRepo)
 		}
 		err = util.Unzip(zippedRepo, util.TempPath(""))
-		cobra.CheckErr(err)
+		if err != nil {
+			return err
+		}
 
 		// Sync the templates directory to the working directory
 		unzippedRepo := util.TempPath(fmt.Sprintf("%s-%s", repo, branch))
 		tmplDir := filepath.Join(unzippedRepo, "templates")
 		dst := "./templates"
 		if Verbose {
-			fmt.Printf("Syncing %s to ./templates\n", tmplDir)
+			fmt.Fprintf(cmd.OutOrStdout(), "Syncing %s to %s\n", tmplDir, dst)
 		}
 		err = util.SyncDirs(tmplDir, dst, false, os.Stdin)
-		cobra.CheckErr(err)
-		fmt.Printf("Successfully pulled template solution files to ./templates\n")
+		if err != nil {
+			return err
+		}
+		fmt.Fprintf(cmd.OutOrStdout(), "Successfully pulled template solution files to ./templates\n")
+		return nil
 	},
 }
