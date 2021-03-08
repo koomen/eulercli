@@ -57,17 +57,15 @@ func getProblemText(problemNum int) (string, error) {
 }
 
 func getAnswer(problemNum int) (string, error) {
-	re := regexp.MustCompile(`\n[0-9]+.\s+`)
+	re := regexp.MustCompile(`(?m:^[0-9]+.\s+)`)
 	split := re.Split(consts.SolutionsText, -1)
 	largestSupportedProblemNum := len(split) - 1
-
-	fmt.Println(split)
 
 	if problemNum > largestSupportedProblemNum || problemNum < 1 {
 		return "", &MissingProblemError{problemNum, largestSupportedProblemNum}
 	}
 
-	return strings.Trim(split[problemNum], " \n"), nil
+	return strings.TrimSpace(split[problemNum]), nil
 
 }
 
