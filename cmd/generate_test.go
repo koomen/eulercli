@@ -50,5 +50,14 @@ func TestGenerateCmd(t *testing.T) {
 	err = rootCmd.Execute()
 	assert.NoError(t, err)
 
+	out, err = ioutil.ReadAll(&stdout)
+	assert.NoError(t, err)
+	wants = []string{
+		"julia/euler0002/solution.jl\n",
+	}
+	for _, want := range wants {
+		assert.Contains(t, string(out), want)
+	}
+
 	assert.FileExists(t, "julia/euler0002/solution.jl")
 }
