@@ -206,7 +206,7 @@ func TestSyncFiles(t *testing.T) {
 	CreateTempDir()
 	defer RemoveTempDir()
 
-	var stdin bytes.Buffer
+	var stdin, stdout bytes.Buffer
 
 	f1 := TempPath("dir1/file1.txt")
 	f2 := TempPath("dir1/dir2/file2.txt")
@@ -225,9 +225,9 @@ func TestSyncFiles(t *testing.T) {
 	assert.False(t, os.IsNotExist(err))
 
 	// Sync files
-	err = SyncFiles(f1, TempPath("destdir/file1.txt"), false, &stdin)
+	err = SyncFiles(f1, TempPath("destdir/file1.txt"), false, &stdin, &stdout)
 	assert.NoError(t, err)
-	err = SyncFiles(f2, TempPath("destdir/file2.txt"), false, &stdin)
+	err = SyncFiles(f2, TempPath("destdir/file2.txt"), false, &stdin, &stdout)
 	assert.NoError(t, err)
 
 	// Ensure sync'd files are equal
@@ -237,23 +237,22 @@ func TestSyncFiles(t *testing.T) {
 	assert.True(t, got)
 
 	// Sync f2 -> distdir/file1.txt (don't overwrite)
-	fmt.Println("ready")
 	stdin.WriteString("n\n")
-	err = SyncFiles(f2, TempPath("destdir/file1.txt"), false, &stdin)
+	err = SyncFiles(f2, TempPath("destdir/file1.txt"), false, &stdin, &stdout)
 	got, err = AreChecksumsEqual(f2, TempPath("destdir/file1.txt"))
 	assert.False(t, got)
 
 	// Sync f2 -> distdir/file1.txt (overwrite)
 	stdin.Reset()
 	stdin.WriteString("y\n")
-	err = SyncFiles(f2, TempPath("destdir/file1.txt"), false, &stdin)
+	err = SyncFiles(f2, TempPath("destdir/file1.txt"), false, &stdin, &stdout)
 	got, err = AreChecksumsEqual(f2, TempPath("destdir/file1.txt"))
 	assert.True(t, got)
 
 	// Sync f1 -> distdir/file1.txt (overwrite)
 	stdin.Reset()
 	stdin.WriteString("n\n")
-	err = SyncFiles(f1, TempPath("destdir/file1.txt"), true, &stdin)
+	err = SyncFiles(f1, TempPath("destdir/file1.txt"), true, &stdin, &stdout)
 	got, err = AreChecksumsEqual(f1, TempPath("destdir/file1.txt"))
 	assert.True(t, got)
 }
@@ -262,7 +261,7 @@ func TestSyncDirs(t *testing.T) {
 	CreateTempDir()
 	defer RemoveTempDir()
 
-	var stdin bytes.Buffer
+	var stdin, stdout bytes.Buffer
 
 	d1 := TempPath("dir1")
 	// d2 := TempPath("dir1/dir2")
@@ -284,7 +283,7 @@ func TestSyncDirs(t *testing.T) {
 	assert.False(t, os.IsNotExist(err))
 
 	// Sync dir1 to dir3
-	err = SyncDirs(d1, d3, false, &stdin)
+	err = SyncDirs(d1, d3, false, &stdin, &stdout)
 	assert.NoError(t, err)
 
 	// source and destination files should be equal
@@ -302,7 +301,7 @@ func TestSyncDirs(t *testing.T) {
 	// Sync dir1 to dir3
 	stdin.Reset()
 	stdin.WriteString("n\n")
-	err = SyncDirs(d1, d3, false, &stdin)
+	err = SyncDirs(d1, d3, false, &stdin, &stdout)
 	assert.NoError(t, err)
 
 	// This time, dir1/file1.txt and dir3/file1.txt should be different
@@ -316,7 +315,7 @@ func TestSyncDirs(t *testing.T) {
 	// Sync dir1 to dir3 again, but confirm the overwrite of file1.txt
 	stdin.Reset()
 	stdin.WriteString("y\n")
-	err = SyncDirs(d1, d3, false, &stdin)
+	err = SyncDirs(d1, d3, false, &stdin, &stdout)
 	assert.NoError(t, err)
 
 	// This time, dir1/file1.txt and dir3/file1.txt should be identical

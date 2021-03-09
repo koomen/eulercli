@@ -183,7 +183,7 @@ func Unzip(src, dst string) error {
 // SyncFiles - Sync a source file a destination
 // If the destination exists and overwrite is false, the user is asked to confirm
 // the operation.
-func SyncFiles(src, dst string, overwrite bool, stdin io.Reader) error {
+func SyncFiles(src, dst string, overwrite bool, stdin io.Reader, stdout io.Writer) error {
 	srcStat, err := os.Stat(src)
 	if err != nil {
 		return err
@@ -206,7 +206,7 @@ func SyncFiles(src, dst string, overwrite bool, stdin io.Reader) error {
 		}
 		if !overwrite {
 			msg := fmt.Sprintf("File %s exists. Overwrite?", dst)
-			confirm, err := Confirm(msg, false, stdin, os.Stdout)
+			confirm, err := Confirm(msg, false, stdin, stdout)
 			if err != nil {
 				return err
 			}
@@ -230,7 +230,7 @@ func SyncFiles(src, dst string, overwrite bool, stdin io.Reader) error {
 }
 
 // SyncDirs - Sync a source directory to a destination
-func SyncDirs(src, dst string, overwrite bool, stdin io.Reader) error {
+func SyncDirs(src, dst string, overwrite bool, stdin io.Reader, stdout io.Writer) error {
 	srcStat, err := os.Stat(src)
 	if err != nil {
 		return err
@@ -252,6 +252,6 @@ func SyncDirs(src, dst string, overwrite bool, stdin io.Reader) error {
 			return err
 		}
 		dstPath := filepath.Join(dst, relPath)
-		return SyncFiles(path, dstPath, overwrite, stdin)
+		return SyncFiles(path, dstPath, overwrite, stdin, stdout)
 	})
 }

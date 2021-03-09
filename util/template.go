@@ -46,7 +46,7 @@ func renderToFile(
 			return fmt.Errorf("cannot overwrite directory %s", dst)
 		}
 		if !overwrite {
-			confirm, err := Confirm(fmt.Sprintf("Overwrite file %s?", dst), false, os.Stdin, os.Stdout)
+			confirm, err := Confirm(fmt.Sprintf("Overwrite file %s?", dst), false, stdin, stdout)
 			if err != nil {
 				return err
 			}
