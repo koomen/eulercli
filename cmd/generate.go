@@ -89,13 +89,16 @@ var generateCmd = &cobra.Command{
 					consts.CLIName,
 					consts.DefaultTemplatesDir,
 				)
-				pullConfirm := util.Confirm(
+				confirm, err := util.Confirm(
 					"Would you like to do this now?",
 					true,
 					cmd.InOrStdin(),
 					cmd.OutOrStdout(),
 				)
-				if pullConfirm {
+				if err != nil {
+					return err
+				}
+				if confirm {
 					err = pullCmd.RunE(pullCmd, []string{})
 					if err != nil {
 						return err
@@ -142,7 +145,7 @@ var generateCmd = &cobra.Command{
 		}
 
 		fmt.Fprintf(cmd.OutOrStdout(), "Rendering templates from %s to %s\n", TemplateDir, DstDir)
-		err = util.RenderTemplateDir(TemplateDir, tempDstDir, problem, true)
+		err = util.RenderTemplateDir(TemplateDir, tempDstDir, problem, true, cmd.InOrStdin(), cmd.OutOrStdout())
 		if err != nil {
 			return err
 		}
