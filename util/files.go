@@ -61,7 +61,7 @@ func DownloadFile(url, dst string) error {
 
 // Confirm - get a confirmation from the user. A "y" response will return true
 // and an "n" response will return false
-func Confirm(msg string, defaultVal bool, stdin io.Reader, stdout io.Writer) bool {
+func Confirm(msg string, defaultVal bool, stdin io.Reader, stdout io.Writer) (bool, error) {
 	var options string
 	if defaultVal {
 		options = "[Yn]"
@@ -73,20 +73,23 @@ func Confirm(msg string, defaultVal bool, stdin io.Reader, stdout io.Writer) boo
 	for true {
 		stdout.Write([]byte(fmt.Sprintf("%s %s: ", msg, options)))
 		resp, _ := reader.ReadString('\n')
+		if len(resp) < 1 {
+			return false, fmt.Errorf("failed to read from stdin")
+		}
 		trimmed := resp[0 : len(resp)-1]
 		switch trimmed {
 		case "":
-			return defaultVal
+			return defaultVal, nil
 		case "y", "Y":
-			return true
+			return true, nil
 		case "n", "N":
-			return false
+			return false, nil
 		}
 		stdout.Write([]byte(fmt.Sprintf("Response \"%s\" not recognized.\n", trimmed)))
 	}
 
 	// Unreachable statement; included for the compiler
-	return false
+	return false, nil
 }
 
 // ComputeFileChecksum - compute the crc32 checksum of a file
@@ -189,7 +192,7 @@ func SyncFiles(src, dst string, overwrite bool, stdin io.Reader) error {
 		return fmt.Errorf("SyncFiles source %s is a directory", src)
 	}
 	dstStat, err := os.Stat(dst)
-	if !os.IsNotExist(err) {
+	if err == nil {
 		if dstStat.IsDir() {
 			return fmt.Errorf("SyncFiles destination %s is a directory", dst)
 		}
@@ -203,7 +206,11 @@ func SyncFiles(src, dst string, overwrite bool, stdin io.Reader) error {
 		}
 		if !overwrite {
 			msg := fmt.Sprintf("File %s exists. Overwrite?", dst)
-			if !Confirm(msg, false, stdin, os.Stdout) {
+			confirm, err := Confirm(msg, false, stdin, os.Stdout)
+			if err != nil {
+				return err
+			}
+			if !confirm {
 				// Todo: the user did not confirm; should return (and handle) an error
 				return nil
 			}

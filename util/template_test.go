@@ -1,6 +1,7 @@
 package util
 
 import (
+	"bytes"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -34,6 +35,7 @@ func TestRenderToString(t *testing.T) {
 func TestRenderToFile(t *testing.T) {
 	CreateTempDir()
 	defer RemoveTempDir()
+	var stdin, stdout bytes.Buffer
 
 	// Create template file
 	tmpl := TempPath("template.txt")
@@ -41,7 +43,7 @@ func TestRenderToFile(t *testing.T) {
 
 	// Render template file to dst.txt
 	dst := TempPath("dst.txt")
-	assert.NoError(t, renderToFile(tmpl, dst, problem))
+	assert.NoError(t, renderToFile(tmpl, dst, problem, false, &stdin, &stdout))
 
 	// Ensure dst.txt contains the expected text
 	want := rendered
@@ -53,12 +55,13 @@ func TestRenderToFile(t *testing.T) {
 	assert.NoError(t, ioutil.WriteFile(tmpl, []byte(badTemplateStr), 0766))
 
 	// renderToFile should error
-	assert.Error(t, renderToFile(tmpl, dst, problem))
+	assert.Error(t, renderToFile(tmpl, dst, problem, false, &stdin, &stdout))
 }
 
 func TestRenderFiles(t *testing.T) {
 	CreateTempDir()
 	defer RemoveTempDir()
+	var stdin, stdout bytes.Buffer
 
 	// Create the following files
 	// 		file1.txt
@@ -75,7 +78,7 @@ func TestRenderFiles(t *testing.T) {
 
 	// Render templates
 	dstDir := TempPath("output")
-	assert.NoError(t, RenderTemplateDir(TempPath("templates"), dstDir, problem, true))
+	assert.NoError(t, RenderTemplateDir(TempPath("templates"), dstDir, problem, true, &stdin, &stdout))
 
 	want := rendered
 	got, err := os.ReadFile(filepath.Join(dstDir, "file1.txt"))

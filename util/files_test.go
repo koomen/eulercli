@@ -94,9 +94,10 @@ func TestConfirm(t *testing.T) {
 	wantResult := true
 	wantOut := fmt.Sprintf("%s [Yn]:", msg)
 
-	gotResult := Confirm(msg, true, &stdin, &stdout)
-	gotOut, err := stdout.ReadString(':')
+	gotResult, err := Confirm(msg, true, &stdin, &stdout)
+	assert.NoError(t, err)
 
+	gotOut, err := stdout.ReadString(':')
 	assert.NoError(t, err)
 	assert.Equal(t, wantResult, gotResult)
 	assert.Equal(t, wantOut, gotOut)
@@ -109,9 +110,10 @@ func TestConfirm(t *testing.T) {
 	wantResult = false
 	wantOut = fmt.Sprintf("%s [Yn]:", msg)
 
-	gotResult = Confirm(msg, true, &stdin, &stdout)
-	gotOut, err = stdout.ReadString(':')
+	gotResult, err = Confirm(msg, true, &stdin, &stdout)
+	assert.NoError(t, err)
 
+	gotOut, err = stdout.ReadString(':')
 	assert.NoError(t, err)
 	assert.Equal(t, wantResult, gotResult)
 	assert.Equal(t, wantOut, gotOut)
@@ -124,9 +126,10 @@ func TestConfirm(t *testing.T) {
 	wantResult = false
 	wantOut = fmt.Sprintf("%s [yN]:", msg)
 
-	gotResult = Confirm(msg, false, &stdin, &stdout)
-	gotOut, err = stdout.ReadString(':')
+	gotResult, err = Confirm(msg, false, &stdin, &stdout)
+	assert.NoError(t, err)
 
+	gotOut, err = stdout.ReadString(':')
 	assert.NoError(t, err)
 	assert.Equal(t, wantResult, gotResult)
 	assert.Equal(t, wantOut, gotOut)
@@ -139,9 +142,10 @@ func TestConfirm(t *testing.T) {
 	wantResult = false
 	wantOut = fmt.Sprintf("%s [Yn]: Response \"yes\" not recognized.\n", msg)
 
-	gotResult = Confirm(msg, true, &stdin, &stdout)
-	gotOut, err = stdout.ReadString('\n')
+	gotResult, err = Confirm(msg, true, &stdin, &stdout)
+	assert.NoError(t, err)
 
+	gotOut, err = stdout.ReadString('\n')
 	assert.NoError(t, err)
 	assert.Equal(t, wantResult, gotResult)
 	assert.Equal(t, wantOut, gotOut)

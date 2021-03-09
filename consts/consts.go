@@ -16,8 +16,14 @@ const (
 	Unknown Correctness = -1
 )
 
+// CLIName - default name of the eulercli executable
+const CLIName = "euler"
+
+// ConfigFile - config filename
+const ConfigFile = "eulercli_cfg"
+
 // DefaultTemplatesDir - default relative path of the templates directory
-const DefaultTemplatesDir = "./eulercli_templates"
+const DefaultTemplatesDir = "eulercli_templates"
 
 // DirPerm - permissions used for created directories
 const DirPerm = 0755

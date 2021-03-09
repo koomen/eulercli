@@ -4,29 +4,19 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/koomen/eulercli/consts"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
 // CliName holds name of the CLI executable
 var (
-	CliName   = os.Args[0]
-	Language  string
 	Overwrite bool
 	Verbose   bool
 )
 
 // init - Initialize the root command
 func init() {
-	// Add a global language flag
-	rootCmd.PersistentFlags().StringVarP(
-		&Language,
-		"language",
-		"l",
-		"julia",
-		"programming language used to start and solve problems (default: julia)",
-	)
-
 	rootCmd.PersistentFlags().BoolVarP(
 		&Overwrite,
 		"overwrite",
@@ -64,10 +54,10 @@ func init() {
 var rootCmd = &cobra.Command{
 	Use:     "euler",
 	Version: "0.1",
-	Short:   fmt.Sprintf("%s is a CLI for working on Project Euler problems", CliName),
+	Short:   fmt.Sprintf("%s is a CLI for working on Project Euler problems", consts.CLIName),
 	Long: fmt.Sprintf(`%s is a CLI for working on Project Euler problems
 
-Use it to create templated solutions to new problems, execute solutions, and check answers.`, CliName),
+Use it to create templated solutions to new problems, execute solutions, and check answers.`, consts.CLIName),
 }
 
 // Execute calls the eponymous function on the root command
