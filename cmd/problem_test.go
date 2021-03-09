@@ -30,6 +30,7 @@ func TestProblemCmdProblemOutOfBounds(t *testing.T) {
 
 	rootCmd.SetArgs([]string{"problem", "1000000"})
 	rootCmd.SetOut(&stdout)
+	rootCmd.SetErr(&stdout)
 	err := rootCmd.Execute()
 	_, ok := err.(*util.MissingProblemError)
 	assert.True(t, ok)
