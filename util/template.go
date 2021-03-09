@@ -67,7 +67,6 @@ func renderToFile(
 	if err != nil {
 		return err
 	}
-	fmt.Printf("Rendered template %s to %s\n", tmpl, dst)
 	return nil
 }
 
