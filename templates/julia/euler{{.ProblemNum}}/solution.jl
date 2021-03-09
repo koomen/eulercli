@@ -30,9 +30,6 @@ Pkg.activate("../projecteulerenv")
 
 using BenchmarkTools
 using Profile
-using MD5
-
-const ANSWER_MD5 = {{.AnswerMD5}}
 
 # Solution code
 
@@ -56,8 +53,7 @@ elseif "--profile" in ARGS || "-p" in ARGS
     @profile solve()
     Profile.print(combine=true, sortedby=:count, mincount=5, maxdepth=8)
 else
-    println("Solving...")
+    println("Solving project euler problem {{.ProblemNum}}...")
     solution = solve()
-    iscorrect = bytes2hex(md5(string(solution))) == ANSWER_MD5
-    println("Obtained $(iscorrect ? "correct" : "incorrect") solution $(solution)")
+    println("Obtained solution $(solution)")
 end
