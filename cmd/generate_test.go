@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bytes"
+	"io/ioutil"
 	"os"
 	"testing"
 
@@ -31,6 +32,19 @@ func TestGenerateCmd(t *testing.T) {
 	assert.FileExists(t, "julia/euler0001/solution.jl")
 	defer os.RemoveAll("eulercli_templates")
 	defer os.RemoveAll("julia")
+
+	out, err := ioutil.ReadAll(&stdout)
+	assert.NoError(t, err)
+
+	wants := []string{
+		"Template directory eulercli_templates/julia does not exist. You can use\n\n",
+		"Successfully pulled template solution files to eulercli_templates\n",
+		"julia/initenv.jl\n",
+		"julia/euler0001/solution.jl\n",
+	}
+	for _, want := range wants {
+		assert.Contains(t, string(out), want)
+	}
 
 	rootCmd.SetArgs([]string{"generate", "2", "--language", "julia"})
 	err = rootCmd.Execute()
