@@ -11,10 +11,11 @@ import (
 
 // EulerProblem - a structured type representing a project euler problem
 type EulerProblem struct {
-	ProblemNum  int
-	ProblemText string
-	AnswerMD5   string
-	Answer      string
+	ProblemNum       int
+	PaddedProblemNum string
+	ProblemText      string
+	AnswerMD5        string
+	Answer           string
 }
 
 // MissingProblemError - used when the user requests a problem that doesn't exist
@@ -80,10 +81,11 @@ func GetProblem(problemNum int) (*EulerProblem, error) {
 	}
 
 	return &EulerProblem{
-		ProblemNum:  problemNum,
-		ProblemText: text,
-		AnswerMD5:   fmt.Sprintf("%x", md5.Sum([]byte(answer))),
-		Answer:      answer,
+		ProblemNum:       problemNum,
+		PaddedProblemNum: fmt.Sprintf("%04d", problemNum),
+		ProblemText:      text,
+		AnswerMD5:        fmt.Sprintf("%x", md5.Sum([]byte(answer))),
+		Answer:           answer,
 	}, nil
 }
 
