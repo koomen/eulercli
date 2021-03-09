@@ -26,13 +26,18 @@ func TestPullCmd(t *testing.T) {
 	out, err := ioutil.ReadAll(&stdout)
 	assert.NoError(t, err)
 
-	want := ("Downloading templates from https://github.com/koomen/eulercli\n" +
-		"Successfully pulled template solution files to eulercli_templates\n")
-	assert.Equal(t, want, string(out))
+	wants := []string{
+		"Downloading templates from https://github.com/koomen/eulercli\n",
+		"Successfully pulled template solution files to eulercli_templates\n",
+	}
+	for _, want := range wants {
+		assert.Contains(t, string(out), want)
+	}
 
 	assert.DirExists(t, "eulercli_templates")
 	assert.DirExists(t, "eulercli_templates/julia")
-	assert.FileExists(t, "eulercli_templates/julia/template.jl")
+	assert.FileExists(t, "eulercli_templates/julia/initenv.jl")
+	assert.FileExists(t, "eulercli_templates/julia/euler{{.PaddedProblemNum}}/solution.jl")
 
 	os.RemoveAll("eulercli_templates")
 }
@@ -54,15 +59,20 @@ func TestPullCmdVerbose(t *testing.T) {
 	out, err := ioutil.ReadAll(&stdout)
 	assert.NoError(t, err)
 
-	want := ("Downloading templates from https://github.com/koomen/eulercli\n" +
-		"Unzipping /tmp/eulercli/eulercli-main.zip\n" +
-		"Syncing /tmp/eulercli/eulercli-main/templates to eulercli_templates\n" +
-		"Successfully pulled template solution files to eulercli_templates\n")
-	assert.Equal(t, want, string(out))
+	wants := []string{
+		"Downloading templates from https://github.com/koomen/eulercli\n",
+		"Unzipping /tmp/eulercli/eulercli-main.zip\n",
+		"Syncing /tmp/eulercli/eulercli-main/templates to eulercli_templates\n",
+		"Successfully pulled template solution files to eulercli_templates\n",
+	}
+	for _, want := range wants {
+		assert.Contains(t, string(out), want)
+	}
 
 	assert.DirExists(t, "eulercli_templates")
 	assert.DirExists(t, "eulercli_templates/julia")
-	assert.FileExists(t, "eulercli_templates/julia/template.jl")
+	assert.FileExists(t, "eulercli_templates/julia/initenv.jl")
+	assert.FileExists(t, "eulercli_templates/julia/euler{{.PaddedProblemNum}}/solution.jl")
 
 	os.RemoveAll("eulercli_templates")
 }

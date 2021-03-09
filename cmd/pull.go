@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 	"path/filepath"
 
 	"github.com/koomen/eulercli/consts"
@@ -49,7 +48,7 @@ var pullCmd = &cobra.Command{
 		if Verbose {
 			fmt.Fprintf(cmd.OutOrStdout(), "Syncing %s to %s\n", tmplDir, dst)
 		}
-		err = util.SyncDirs(tmplDir, dst, false, os.Stdin)
+		err = util.SyncDirs(tmplDir, dst, false, cmd.InOrStdin(), cmd.OutOrStdout())
 		if err != nil {
 			return err
 		}

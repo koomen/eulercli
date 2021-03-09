@@ -144,11 +144,24 @@ var generateCmd = &cobra.Command{
 			return err
 		}
 
-		fmt.Fprintf(cmd.OutOrStdout(), "Rendering templates from %s to %s\n", TemplateDir, DstDir)
+		if Verbose {
+			fmt.Fprintf(cmd.OutOrStdout(), "Rendering templates from %s to %s\n", TemplateDir, tempDstDir)
+		}
 		err = util.RenderTemplateDir(TemplateDir, tempDstDir, problem, true, cmd.InOrStdin(), cmd.OutOrStdout())
 		if err != nil {
 			return err
 		}
-		return util.SyncDirs(tempDstDir, DstDir, false, cmd.InOrStdin())
+
+		if Verbose {
+			fmt.Fprintf(cmd.OutOrStdout(), "Syncing rendered templates from %s to %s\n", tempDstDir, DstDir)
+		} else {
+			fmt.Fprintf(cmd.OutOrStdout(), "Writing generated solution files to %s\n", DstDir)
+		}
+		err = util.SyncDirs(tempDstDir, DstDir, false, cmd.InOrStdin(), cmd.OutOrStdout())
+		if err != nil {
+			return err
+		}
+		fmt.Fprintf(cmd.OutOrStdout(), "Have fun!\n")
+		return nil
 	},
 }

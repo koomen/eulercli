@@ -226,7 +226,12 @@ func SyncFiles(src, dst string, overwrite bool, stdin io.Reader, stdout io.Write
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(dst, srcDat, consts.FilePerm)
+	err = os.WriteFile(dst, srcDat, consts.FilePerm)
+	if err != nil {
+		return err
+	}
+	stdout.Write([]byte(fmt.Sprintf("  Wrote file %s\n", dst)))
+	return nil
 }
 
 // SyncDirs - Sync a source directory to a destination
