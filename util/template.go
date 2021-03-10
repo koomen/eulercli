@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"html/template"
+	"io"
 	"os"
 	"path/filepath"
 )
@@ -26,11 +27,33 @@ func renderToString(templStr string, data interface{}) (string, error) {
 
 // renderToFile - Takes a template file and data instance to renders to a
 // destination file
-func renderToFile(tmpl, dst string, data interface{}) error {
+func renderToFile(
+	tmpl, dst string,
+	data interface{},
+	overwrite bool,
+	stdin io.Reader,
+	stdout io.Writer,
+) error {
 	// Use the template file to create a template instance
 	t, err := template.ParseFiles(tmpl)
 	if err != nil {
 		return err
+	}
+
+	stat, err := os.Stat(dst)
+	if err == nil {
+		if stat.IsDir() {
+			return fmt.Errorf("cannot overwrite directory %s", dst)
+		}
+		if !overwrite {
+			confirm, err := Confirm(fmt.Sprintf("Overwrite file %s?", dst), false, stdin, stdout)
+			if err != nil {
+				return err
+			}
+			if !confirm {
+				return nil
+			}
+		}
 	}
 
 	f, err := CreateFile(dst)
@@ -40,7 +63,11 @@ func renderToFile(tmpl, dst string, data interface{}) error {
 	defer f.Close()
 
 	// Write the rendered text into the destination file
-	return t.Execute(f, data)
+	err = t.Execute(f, data)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // RenderTemplateDir - Render all files in the tmplDir into dst
@@ -49,6 +76,8 @@ func RenderTemplateDir(
 	dstDir string,
 	problem *EulerProblem,
 	overwrite bool,
+	stdin io.Reader,
+	stdout io.Writer,
 ) error {
 	return filepath.Walk(tmplDir,
 		func(tmpl string, info os.FileInfo, err error) error {
@@ -76,17 +105,7 @@ func RenderTemplateDir(
 				return err
 			}
 
-			// Only write the template file if the destination file does not
-			// already exist or the overwriteExisting parameter is true
-			_, err = os.Stat(dst)
-			if os.IsNotExist(err) ||
-				overwrite ||
-				Confirm(fmt.Sprintf("Overwrite file %s", dst), false, os.Stdin, os.Stdout) {
-				fmt.Printf("Writing template %s to %s\n", tmpl, dst)
-				return renderToFile(tmpl, dst, problem)
-			}
-
-			return nil
+			return renderToFile(tmpl, dst, problem, overwrite, stdin, stdout)
 		},
 	)
 }
