@@ -8,9 +8,9 @@ A CLI for working on [Project Euler](https://projecteuler.net) problems
 The project offers a [series](https://projecteuler.net/archives) of "challenging mathematical/computer programming problems".  For those who learn best by doing, solving these problems is a fun and addictive way to learn a new programming language.
 
 [eulercli](https://github.com/koomen/eulercli) is a command-line interface for working on Project Euler problems. You can use it to
-- Create template solution programs in julia -- `euler generate 42 --language julia`
-- Check the output of your solution program -- `julia mysolution.jl | euler check`
-- Echo problem text and hashed solutions -- `euler problem 42`
+- Create template solution programs in julia -- `eulercli generate 42 --language julia`
+- Check the output of your solution program -- `julia mysolution.jl | eulercli check`
+- Echo problem text and hashed solutions -- `eulercli problem 42`
 
 eulercli is written in [go](https://golang.org/). I built it to give back to the Project Euler community, and to get some hands-on experience with [cobra](https://github.com/spf13/cobra), and [viper](https://github.com/spf13/viper).
 
@@ -18,11 +18,15 @@ eulercli is written in [go](https://golang.org/). I built it to give back to the
 
 eulercli requires [go 1.16](https://golang.org/doc/go1.16) or later.
 
-To install it, clone [this repository](https://github.com/koomen/eulercli) and run `go install` in the repository's root directory.
+To install it, run
+
+```sh
+go install github.com/koomen/eulercli
+```
 
 Make sure you've added `GOBIN` to your `PATH`.  See `go help install` for more details on where to find `GOBIN` on your system.
 
-You can verify your installation by running `euler --version`.
+You can verify your installation by running `eulercli --version`.
 
 ## Usage
 
@@ -31,7 +35,7 @@ You can verify your installation by running `euler --version`.
 eulercli will display many euler problems in plaintext:
 
 ```sh
-$ euler problem 1
+$ eulercli problem 1
 If we list all the natural numbers below 10 that are multiples of 3 or 5,
 we get 3, 5, 6 and 9. The sum of these multiples is 23.
 
@@ -41,7 +45,7 @@ Find the sum of all the multiples of 3 or 5 below 1000.
 It will also display the answer to many problems, hashed using MD5.
 
 ```sh
-$ euler answer 1
+$ eulercli answer 1
 e1edf9d1967ca96767dcc2b2d6df69f4
 ```
 
@@ -50,7 +54,7 @@ e1edf9d1967ca96767dcc2b2d6df69f4
 eulercli uses the go's [`text/template` package](https://golang.org/pkg/text/template/) to generate ready-to-use solution programs:
 
 ```sh
-$ euler generate 25 --language julia
+$ eulercli generate 25 --language julia
 julia template not found in ./templates directory
 Using template: https://github.com/koomen/eulercli/raw/main/templates/julia/solution.jl
 Generated boilerplate julia solution for problem 25:
@@ -59,10 +63,10 @@ Generated boilerplate julia solution for problem 25:
 
 eulercli looks for solution template files in `./eulercli_templates`.  If this directory does not exist or if appropriate template files aren't found inside it, they can be downloaded on-the-fly from this github repository.
 
-  You can use `euler pull` to trigger this download manually, or update local templates with newer versions if they exist:
+  You can use `eulercli pull` to trigger this download manually, or update local templates with newer versions if they exist:
 
 ```sh
-$ euler pull
+$ eulercli pull
 Downloading templates from https://github.com/koomen/eulercli
   Wrote file eulercli_templates/julia/initenv.jl
   Wrote file eulercli_templates/julia/src/euler{{.PaddedProblemNum}}/solution.jl
@@ -77,14 +81,14 @@ Downloading solution templates is useful if you want to modify these templates o
 eulercli can also be used to check answers:
 
 ```sh
-$ euler check 1 <answer>
+$ eulercli check 1 <answer>
 Congratulations, <answer> is the correct answer to problem 1!\n
 ```
 
-You can also pipe the results of your euler solution directly to eulercli for answer-checking.  eulercli will echo your program's output to stdout and check it for the correct answer when your program terminates:
+You can also pipe the results of your solution program directly to eulercli for answer-checking.  eulercli will echo your program's output to stdout and check it for the correct answer when your program terminates:
 
 ```sh
-$ julia solution.jl | euler check
+$ julia solution.jl | eulercli check
 No parameters detected. Scanning stdin for problem number and correct answer...
 -------------------------------------------------------------------------------
 
