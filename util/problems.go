@@ -11,9 +11,11 @@ import (
 
 // EulerProblem - a structured type representing a project euler problem
 type EulerProblem struct {
-	ProblemNum  int
-	ProblemText string
-	AnswerMD5   string
+	ProblemNum       int
+	PaddedProblemNum string
+	ProblemText      string
+	AnswerMD5        string
+	Answer           string
 }
 
 // MissingProblemError - used when the user requests a problem that doesn't exist
@@ -29,74 +31,60 @@ func (e *MissingProblemError) Error() string {
 		e.ProblemNum, e.LargestSupportedProblemNum)
 }
 
-// getProblemAndAnswerTextFromFile - extracts problem text from project_euler_problems.txt
-func getProblemAndAnswerTextFromFile(problemNum int) (string, error) {
+// getProblemText - extract problem text from consts/assets/project_euler_problems.txt
+func getProblemText(problemNum int) (string, error) {
 	re := regexp.MustCompile(`Problem [0-9]+\s*\=+`)
-	split := re.Split(consts.ProblemSolutionText, -1)
+	split := re.Split(consts.ProblemsText, -1)
+	largestSupportedProblemNum := len(split) - 1
 
-	largestSupportedProblemNum := len(split) + 1
-
-	if problemNum > largestSupportedProblemNum {
+	if problemNum > largestSupportedProblemNum || problemNum < 1 {
 		return "", &MissingProblemError{problemNum, largestSupportedProblemNum}
 	}
 
-	return split[problemNum], nil
-}
+	rawText := split[problemNum]
 
-// extractProblemFromText - extracts the problem text from the combined problem/answer text
-func extractProblemAndAnswerFromText(text string) (string, string) {
-	re := regexp.MustCompile(`((?s:.*))Answer:\s+(\S+)\s*$`)
-	submatch := re.FindStringSubmatch(text)
-
+	// Remove the MD5'd answer text
+	re = regexp.MustCompile(`((?s:.*))Answer:\s+(\S+)\s*$`)
+	submatch := re.FindStringSubmatch(rawText)
 	if len(submatch) < 3 {
-		return "", ""
+		return rawText, nil
 	}
 
-	// Extract and format problem text
-	rawProblem := submatch[1]
+	// Remove leading spaces from problem text
 	leadingSpaces := regexp.MustCompile(`(?m:^   )`)
-	problem := leadingSpaces.ReplaceAllString(strings.TrimSpace(rawProblem), "")
+	formattedProblemText := leadingSpaces.ReplaceAllString(strings.TrimSpace(submatch[1]), "")
 
-	// Extract hashed answer
-	answer := submatch[2]
+	return formattedProblemText, nil
+}
 
-	return problem, answer
+func getAnswer(problemNum int) (string, error) {
+	re := regexp.MustCompile(`(?m:^[0-9]+.\s+)`)
+	split := re.Split(consts.SolutionsText, -1)
+	largestSupportedProblemNum := len(split) - 1
+
+	if problemNum > largestSupportedProblemNum || problemNum < 1 {
+		return "", &MissingProblemError{problemNum, largestSupportedProblemNum}
+	}
+
+	return strings.TrimSpace(split[problemNum]), nil
+
 }
 
 // GetProblem - return an EulerProblem instance corresponding to the given problem number
 func GetProblem(problemNum int) (*EulerProblem, error) {
 
-	text, err := getProblemAndAnswerTextFromFile(problemNum)
+	text, probErr := getProblemText(problemNum)
+	answer, ansErr := getAnswer(problemNum)
 
-	if err != nil {
-		return nil, err
+	if probErr != nil && ansErr != nil {
+		return nil, ansErr
 	}
-
-	problem, answer := extractProblemAndAnswerFromText(text)
 
 	return &EulerProblem{
-		ProblemNum:  problemNum,
-		ProblemText: problem,
-		AnswerMD5:   answer,
+		ProblemNum:       problemNum,
+		PaddedProblemNum: fmt.Sprintf("%04d", problemNum),
+		ProblemText:      text,
+		AnswerMD5:        fmt.Sprintf("%x", md5.Sum([]byte(answer))),
+		Answer:           answer,
 	}, nil
-}
-
-// CheckAnswer - compares a guess against the answer to a question
-func CheckAnswer(problemNum int, guess string) (consts.Correctness, error) {
-	problem, err := GetProblem(problemNum)
-	if err != nil {
-		return consts.Unknown, err
-	}
-
-	if problem.AnswerMD5 == consts.MissingAnswerMD5 {
-		return consts.Unknown, nil
-	}
-
-	hashedGuess := fmt.Sprintf("%x", md5.Sum([]byte(guess)))
-
-	if hashedGuess == problem.AnswerMD5 {
-		return consts.Correct, nil
-	}
-
-	return consts.Incorrect, nil
 }
