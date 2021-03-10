@@ -21,12 +21,12 @@ func init() {
 var checkCmd = &cobra.Command{
 	Use:   "check [problem] [answer]",
 	Short: "Check the answer supplied on the command line or piped from a solution program",
-	Long: ("Check the answer for the a specified problem.  If the answer is not " +
-		"specified, euler will scan stdin for the correct answer. This means you " +
-		"can pipe the output of your solution program to euler check, e.g.:\n\n" +
-		"     julia solution.jl | euler check 42\n\n" +
-		"if neither the answer or the problem number are specified, euler will " +
-		"scan stdin for both arguments, matching e.g. \"problem 25\" or \"Problem 25\"" +
+	Long: ("Check the answer for the a specified problem.  If the answer is not\n" +
+		"specified, eulercli will scan stdin for the correct answer. This means you\n" +
+		"can pipe the output of your solution program to eulercli check, e.g.:\n\n" +
+		"     julia solution.jl | eulercli check 42\n\n" +
+		"if neither the answer or the problem number are specified, eulercli will \n" +
+		"scan stdin for both arguments, matching e.g. \"problem 25\" or \"Problem 25\"\n" +
 		"for problem 25"),
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) > 2 {

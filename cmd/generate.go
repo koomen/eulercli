@@ -52,6 +52,23 @@ func init() {
 			consts.CLIName,
 		),
 	)
+	generateCmd.PersistentFlags().BoolVarP(
+		&Overwrite,
+		"overwrite",
+		"o",
+		false,
+		"overwrite existing template or target files (default: false)",
+	)
+	generateCmd.PersistentFlags().Lookup("overwrite").NoOptDefVal = "true"
+
+	generateCmd.PersistentFlags().BoolVarP(
+		&Verbose,
+		"verbose",
+		"v",
+		false,
+		"verbose mode (default: false)",
+	)
+	generateCmd.PersistentFlags().Lookup("verbose").NoOptDefVal = "true"
 
 	rootCmd.AddCommand(generateCmd)
 }
@@ -82,8 +99,8 @@ var generateCmd = &cobra.Command{
 		if os.IsNotExist(err) {
 			if filepath.HasPrefix(TemplateDir, consts.DefaultTemplatesDir) {
 				fmt.Fprintf(cmd.OutOrStdout(),
-					"Template directory %s does not exist. You can use"+
-						"\n\n     %s pull\n\n"+
+					"Template directory %s does not exist. You can use\n\n"+
+						"     %s pull\n\n"+
 						"to download or update default templates in %s.\n",
 					TemplateDir,
 					consts.CLIName,
@@ -147,7 +164,7 @@ var generateCmd = &cobra.Command{
 		if Verbose {
 			fmt.Fprintf(cmd.OutOrStdout(), "Rendering templates from %s to %s\n", TemplateDir, tempDstDir)
 		}
-		err = util.RenderTemplateDir(TemplateDir, tempDstDir, problem, true, cmd.InOrStdin(), cmd.OutOrStdout())
+		err = util.RenderTemplateDir(TemplateDir, tempDstDir, problem, Overwrite, cmd.InOrStdin(), cmd.OutOrStdout())
 		if err != nil {
 			return err
 		}
@@ -157,7 +174,7 @@ var generateCmd = &cobra.Command{
 		} else {
 			fmt.Fprintf(cmd.OutOrStdout(), "Writing generated solution files to %s\n", DstDir)
 		}
-		err = util.SyncDirs(tempDstDir, DstDir, false, cmd.InOrStdin(), cmd.OutOrStdout())
+		err = util.SyncDirs(tempDstDir, DstDir, Overwrite, cmd.InOrStdin(), cmd.OutOrStdout())
 		if err != nil {
 			return err
 		}

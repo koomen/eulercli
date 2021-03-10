@@ -10,6 +10,23 @@ import (
 )
 
 func init() {
+	pullCmd.PersistentFlags().BoolVarP(
+		&Overwrite,
+		"overwrite",
+		"o",
+		false,
+		"overwrite existing template or target files (default: false)",
+	)
+	pullCmd.PersistentFlags().Lookup("overwrite").NoOptDefVal = "true"
+
+	pullCmd.PersistentFlags().BoolVarP(
+		&Verbose,
+		"verbose",
+		"v",
+		false,
+		"verbose mode (default: false)",
+	)
+	pullCmd.PersistentFlags().Lookup("verbose").NoOptDefVal = "true"
 	rootCmd.AddCommand(pullCmd)
 }
 
@@ -48,7 +65,7 @@ var pullCmd = &cobra.Command{
 		if Verbose {
 			fmt.Fprintf(cmd.OutOrStdout(), "Syncing %s to %s\n", tmplDir, dst)
 		}
-		err = util.SyncDirs(tmplDir, dst, false, cmd.InOrStdin(), cmd.OutOrStdout())
+		err = util.SyncDirs(tmplDir, dst, Overwrite, cmd.InOrStdin(), cmd.OutOrStdout())
 		if err != nil {
 			return err
 		}
