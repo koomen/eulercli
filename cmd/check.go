@@ -17,6 +17,9 @@ func init() {
 	rootCmd.AddCommand(checkCmd)
 }
 
+var green func(...interface{}) string = color.New(color.FgGreen).SprintFunc()
+var red func(...interface{}) string = color.New(color.FgRed).SprintFunc()
+
 // checkCmd
 var checkCmd = &cobra.Command{
 	Use:   "check [problem] [answer]",
@@ -98,9 +101,6 @@ var checkCmd = &cobra.Command{
 			fmt.Fprintf(cmd.OutOrStdout(), "The correct answer for problem %d is unknown\n", problemNum)
 			return nil
 		}
-
-		green := color.New(color.FgGreen).SprintFunc()
-		red := color.New(color.FgRed).SprintFunc()
 
 		if answer != "" {
 			if answer == problem.Answer {

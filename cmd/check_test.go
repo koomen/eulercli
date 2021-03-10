@@ -19,7 +19,7 @@ func TestCheckCmd(t *testing.T) {
 	assert.NoError(t, err)
 	out, err := ioutil.ReadAll(&stdout)
 	assert.NoError(t, err)
-	want := "Congratulations, 233168 is the correct answer to problem 1!\n"
+	want := green("Congratulations, 233168 is the correct answer to problem 1!\n")
 	assert.Equal(t, want, string(out))
 
 	rootCmd.SetArgs([]string{"check", "1", "233169"})
@@ -29,7 +29,7 @@ func TestCheckCmd(t *testing.T) {
 	assert.NoError(t, err)
 	out, err = ioutil.ReadAll(&stdout)
 	assert.NoError(t, err)
-	want = "233169 is not the correct answer to problem 1. Keep trying!\n"
+	want = red("233169 is not the correct answer to problem 1. Keep trying!\n")
 	assert.Equal(t, want, string(out))
 
 	// Check answer via piped input
@@ -44,7 +44,7 @@ func TestCheckCmd(t *testing.T) {
 		"The answer is 233168.\n" +
 		"\n\n-------------------------------------------------------------------------------\n" +
 		"Detected answer 233168 in input.\n" +
-		"Congratulations, this is the correct answer to problem 1!\n")
+		green("Congratulations, this is the correct answer to problem 1!\n"))
 	assert.Equal(t, want, string(out))
 
 	rootCmd.SetArgs([]string{"check", "1"})
@@ -57,7 +57,7 @@ func TestCheckCmd(t *testing.T) {
 		"-------------------------------------------------------------------------------\n\n\n" +
 		"The answer is 233169.\n" +
 		"\n\n-------------------------------------------------------------------------------\n" +
-		"Failed to find correct answer for problem 1 in input. Keep trying!\n")
+		red("Failed to find correct answer for problem 1 in input. Keep trying!\n"))
 	assert.Equal(t, want, string(out))
 
 	// Check answer and infer problem number via piped input
@@ -73,6 +73,6 @@ func TestCheckCmd(t *testing.T) {
 		"\n\n-------------------------------------------------------------------------------\n" +
 		"Extracted problem number 1 from input\n" +
 		"Detected answer 233168 in input.\n" +
-		"Congratulations, this is the correct answer to problem 1!\n")
+		green("Congratulations, this is the correct answer to problem 1!\n"))
 	assert.Equal(t, want, string(out))
 }
