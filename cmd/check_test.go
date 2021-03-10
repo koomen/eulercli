@@ -46,6 +46,19 @@ func TestCheckCmd(t *testing.T) {
 		"Detected answer 233168 in input. Congratulations, this is the correct answer to problem 1!\n")
 	assert.Equal(t, want, string(out))
 
+	rootCmd.SetArgs([]string{"check", "1"})
+	stdin.Write([]byte("The answer is 233169.\n"))
+	err = rootCmd.Execute()
+	assert.NoError(t, err)
+	out, err = ioutil.ReadAll(&stdout)
+	assert.NoError(t, err)
+	want = ("No answer parameter detected. Scanning stdin for correct answer...\n" +
+		"-------------------------------------------------------------------------------\n\n\n" +
+		"The answer is 233169.\n" +
+		"\n\n-------------------------------------------------------------------------------\n" +
+		"Failed to find correct answer for problem 1 in input. Keep trying!\n")
+	assert.Equal(t, want, string(out))
+
 	// Check answer and infer problem number via piped input
 	rootCmd.SetArgs([]string{"check"})
 	stdin.Write([]byte("The answer to problem 1 is 233168.\n"))

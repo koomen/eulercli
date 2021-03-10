@@ -37,7 +37,7 @@ func TestPullCmd(t *testing.T) {
 	assert.DirExists(t, "eulercli_templates")
 	assert.DirExists(t, "eulercli_templates/julia")
 	assert.FileExists(t, "eulercli_templates/julia/initenv.jl")
-	assert.FileExists(t, "eulercli_templates/julia/euler{{.PaddedProblemNum}}/solution.jl")
+	assert.FileExists(t, "eulercli_templates/julia/src/euler{{.PaddedProblemNum}}/solution.jl")
 
 	os.RemoveAll("eulercli_templates")
 }
@@ -72,7 +72,7 @@ func TestPullCmdVerbose(t *testing.T) {
 	assert.DirExists(t, "eulercli_templates")
 	assert.DirExists(t, "eulercli_templates/julia")
 	assert.FileExists(t, "eulercli_templates/julia/initenv.jl")
-	assert.FileExists(t, "eulercli_templates/julia/euler{{.PaddedProblemNum}}/solution.jl")
+	assert.FileExists(t, "eulercli_templates/julia/src/euler{{.PaddedProblemNum}}/solution.jl")
 
 	os.RemoveAll("eulercli_templates")
 }

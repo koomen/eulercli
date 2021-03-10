@@ -116,7 +116,7 @@ var checkCmd = &cobra.Command{
 			return nil
 		}
 
-		fmt.Fprintf(cmd.OutOrStdout(), red("Failed to find correct answer for problem %d in input.\n"), problemNum)
+		fmt.Fprintf(cmd.OutOrStdout(), red("Failed to find correct answer for problem %d in input. Keep trying!\n"), problemNum)
 		return nil
 	},
 }
