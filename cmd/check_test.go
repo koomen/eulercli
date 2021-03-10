@@ -39,7 +39,7 @@ func TestCheckCmd(t *testing.T) {
 	assert.NoError(t, err)
 	out, err = ioutil.ReadAll(&stdout)
 	assert.NoError(t, err)
-	want = ("No answer parameter detected. Scanning stdin for correct answer...\n" +
+	want = ("Scanning stdin for correct answer...\n" +
 		"-------------------------------------------------------------------------------\n\n\n" +
 		"The answer is 233168.\n" +
 		"\n\n-------------------------------------------------------------------------------\n" +
@@ -53,7 +53,7 @@ func TestCheckCmd(t *testing.T) {
 	assert.NoError(t, err)
 	out, err = ioutil.ReadAll(&stdout)
 	assert.NoError(t, err)
-	want = ("No answer parameter detected. Scanning stdin for correct answer...\n" +
+	want = ("Scanning stdin for correct answer...\n" +
 		"-------------------------------------------------------------------------------\n\n\n" +
 		"The answer is 233169.\n" +
 		"\n\n-------------------------------------------------------------------------------\n" +
@@ -67,7 +67,7 @@ func TestCheckCmd(t *testing.T) {
 	assert.NoError(t, err)
 	out, err = ioutil.ReadAll(&stdout)
 	assert.NoError(t, err)
-	want = ("No parameters detected. Scanning stdin for problem number and correct answer...\n" +
+	want = ("Scanning stdin for problem number and correct answer...\n" +
 		"-------------------------------------------------------------------------------\n\n\n" +
 		"The answer to problem 1 is 233168.\n" +
 		"\n\n-------------------------------------------------------------------------------\n" +
