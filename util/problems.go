@@ -88,23 +88,3 @@ func GetProblem(problemNum int) (*EulerProblem, error) {
 		Answer:           answer,
 	}, nil
 }
-
-// CheckAnswer - compares a guess against the answer to a question
-func CheckAnswer(problemNum int, guess string) (consts.Correctness, error) {
-	problem, err := GetProblem(problemNum)
-	if err != nil {
-		return consts.Unknown, err
-	}
-
-	if problem.AnswerMD5 == consts.MissingAnswerMD5 {
-		return consts.Unknown, nil
-	}
-
-	hashedGuess := fmt.Sprintf("%x", md5.Sum([]byte(guess)))
-
-	if hashedGuess == problem.AnswerMD5 {
-		return consts.Correct, nil
-	}
-
-	return consts.Incorrect, nil
-}

@@ -53,7 +53,7 @@ func init() {
 // RootCmd is cobra command executed when the CLI is called without any arguments
 var rootCmd = &cobra.Command{
 	Use:     "euler",
-	Version: "0.1",
+	Version: "0.2",
 	Short:   fmt.Sprintf("%s is a CLI for working on Project Euler problems", consts.CLIName),
 	Long: fmt.Sprintf(`%s is a CLI for working on Project Euler problems
 

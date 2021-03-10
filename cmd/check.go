@@ -3,10 +3,12 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"io"
+	"regexp"
 	"strconv"
+	"strings"
 
 	"github.com/fatih/color"
-	"github.com/koomen/eulercli/consts"
 	"github.com/koomen/eulercli/util"
 	"github.com/spf13/cobra"
 )
@@ -18,30 +20,103 @@ func init() {
 // checkCmd
 var checkCmd = &cobra.Command{
 	Use:   "check [problem] [answer]",
-	Short: "Check the answer for the a specified problem",
-	Long:  fmt.Sprintf(`Check the answer for the a specified problem.`),
+	Short: "Check the answer supplied on the command line or piped from a solution program",
+	Long: ("Check the answer for the a specified problem.  If the answer is not " +
+		"specified, euler will scan stdin for the correct answer. This means you " +
+		"can pipe the output of your solution program to euler check, e.g.:\n\n" +
+		"     julia solution.jl | euler check 42\n\n" +
+		"if neither the answer or the problem number are specified, euler will " +
+		"scan stdin for both parameters, matching e.g. \"problem 25\" or \"Problem 25\"" +
+		"for problem 25"),
 	Args: func(cmd *cobra.Command, args []string) error {
-		if len(args) < 2 {
-			return errors.New("Requires a problem number and answer arguments (e.g. 10 142913828922)")
+		if len(args) > 2 {
+			return errors.New("check takes at most two arguments")
 		}
-		return util.ValidateProblemStr(args[0])
+		if len(args) >= 1 {
+			return util.ValidateProblemStr(args[0])
+		}
+		return nil
 	},
-	Run: func(cmd *cobra.Command, args []string) {
-		problemNum, _ := strconv.Atoi(args[0])
-		guess := args[1]
+	RunE: func(cmd *cobra.Command, args []string) error {
+		var problemNum int
+		var answer, input string
 
-		correctness, err := util.CheckAnswer(problemNum, guess)
-		cobra.CheckErr(err)
-
-		switch correctness {
-		case consts.Correct:
-			green := color.New(color.FgGreen).SprintFunc()
-			fmt.Printf("The answer %s for problem %d is %s\n", guess, problemNum, green("correct"))
-		case consts.Incorrect:
-			red := color.New(color.FgRed).SprintFunc()
-			fmt.Printf("The answer %s for problem %d is %s\n", guess, problemNum, red("incorrect"))
-		case consts.Unknown:
-			fmt.Printf("The answer to problem %d is unknown\n", problemNum)
+		// Store command line parameters (if present) in the appropriate variables
+		if len(args) >= 1 {
+			problemNum, _ = strconv.Atoi(args[0])
+			if len(args) == 2 {
+				answer = args[1]
+			}
 		}
+
+		// Extract missing parameters from stdin
+		if len(args) <= 1 {
+			if len(args) == 0 {
+				fmt.Fprintf(cmd.OutOrStdout(), "No parameters detected. Scanning stdin for problem number and correct answer...\n")
+			} else {
+				fmt.Fprintf(cmd.OutOrStdout(), "No answer parameter detected. Scanning stdin for correct answer...\n")
+			}
+
+			fmt.Fprintf(cmd.OutOrStdout(), "-------------------------------------------------------------------------------\n\n\n")
+			buf := make([]byte, 1)
+			var n int
+			var err error = nil
+			for err == nil {
+				n, err = cmd.InOrStdin().Read(buf)
+				if n > 0 {
+					input += string(buf[0:n])
+					cmd.OutOrStdout().Write(buf[0:n])
+				}
+			}
+			if err != io.EOF {
+				return err
+			}
+			fmt.Fprintf(cmd.OutOrStdout(), "\n\n-------------------------------------------------------------------------------\n")
+
+			// extract problemNum from input
+			if len(args) == 0 {
+				re := regexp.MustCompile(`[Pp]roblem\s*(\d+)`)
+				submatch := re.FindAllStringSubmatch(input, 1)
+				if submatch != nil && len(submatch) > 0 {
+					problemNum, err = strconv.Atoi(submatch[0][1])
+					if err != nil {
+						return err
+					}
+					fmt.Fprintf(cmd.OutOrStdout(), "Extracted problem number %d from input\n", problemNum)
+				} else {
+					return errors.New("unable to extract problem number from input")
+				}
+			}
+		}
+
+		problem, err := util.GetProblem(problemNum)
+		if err != nil {
+			return err
+		}
+
+		if problem.Answer == "" {
+			fmt.Fprintf(cmd.OutOrStdout(), "The correct answer for problem %d is unknown\n", problemNum)
+			return nil
+		}
+
+		green := color.New(color.FgGreen).SprintFunc()
+		red := color.New(color.FgRed).SprintFunc()
+
+		if answer != "" {
+			if answer == problem.Answer {
+				fmt.Fprintf(cmd.OutOrStdout(), green("Congratulations, %s is the correct answer to problem %d!\n"), answer, problemNum)
+				return nil
+			}
+			fmt.Fprintf(cmd.OutOrStdout(), red("%s is not the correct answer to problem %d. Keep trying!\n"), answer, problemNum)
+			return nil
+		}
+
+		if strings.Contains(input, problem.Answer) {
+			fmt.Fprintf(cmd.OutOrStdout(), green("Detected answer %s in input. Congratulations, this is the correct answer to problem %d!\n"), problem.Answer, problemNum)
+			return nil
+		}
+
+		fmt.Fprintf(cmd.OutOrStdout(), red("Failed to find correct answer for problem %d in input.\n"), problemNum)
+		return nil
 	},
 }
