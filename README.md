@@ -21,7 +21,7 @@ eulercli requires [go 1.16](https://golang.org/doc/go1.16) or later.
 To install it, run
 
 ```sh
-go install github.com/koomen/eulercli
+go install github.com/koomen/eulercli@latest
 ```
 
 Make sure you've added `GOBIN` to your `PATH`.  See `go help install` for more details on where to find `GOBIN` on your system.
