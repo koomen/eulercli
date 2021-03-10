@@ -112,7 +112,8 @@ var checkCmd = &cobra.Command{
 		}
 
 		if strings.Contains(input, problem.Answer) {
-			fmt.Fprintf(cmd.OutOrStdout(), green("Detected answer %s in input. Congratulations, this is the correct answer to problem %d!\n"), problem.Answer, problemNum)
+			fmt.Fprintf(cmd.OutOrStdout(), "Detected answer %s in input.\n", problem.Answer)
+			fmt.Fprintf(cmd.OutOrStdout(), green("Congratulations, this is the correct answer to problem %d!\n"), problemNum)
 			return nil
 		}
 

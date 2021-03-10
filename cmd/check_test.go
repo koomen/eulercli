@@ -43,7 +43,8 @@ func TestCheckCmd(t *testing.T) {
 		"-------------------------------------------------------------------------------\n\n\n" +
 		"The answer is 233168.\n" +
 		"\n\n-------------------------------------------------------------------------------\n" +
-		"Detected answer 233168 in input. Congratulations, this is the correct answer to problem 1!\n")
+		"Detected answer 233168 in input.\n" +
+		"Congratulations, this is the correct answer to problem 1!\n")
 	assert.Equal(t, want, string(out))
 
 	rootCmd.SetArgs([]string{"check", "1"})
@@ -71,6 +72,7 @@ func TestCheckCmd(t *testing.T) {
 		"The answer to problem 1 is 233168.\n" +
 		"\n\n-------------------------------------------------------------------------------\n" +
 		"Extracted problem number 1 from input\n" +
-		"Detected answer 233168 in input. Congratulations, this is the correct answer to problem 1!\n")
+		"Detected answer 233168 in input.\n" +
+		"Congratulations, this is the correct answer to problem 1!\n")
 	assert.Equal(t, want, string(out))
 }
