@@ -12,7 +12,7 @@ The project offers a [series](https://projecteuler.net/archives) of "challenging
 - Check the output of your solution program -- `julia mysolution.jl | eulercli check`
 - Echo problem text and hashed solutions -- `eulercli problem 42`
 
-eulercli is written in [go](https://golang.org/). I built it to give back to the Project Euler community, and to get some hands-on experience with [cobra](https://github.com/spf13/cobra), and [viper](https://github.com/spf13/viper).
+eulercli is written in [go](https://golang.org/). I built it to give back to the Project Euler community, and to get some hands-on experience with [cobra](https://github.com/spf13/cobra).
 
 ## Installation
 
@@ -76,7 +76,7 @@ Successfully pulled template solution files to eulercli_templates
 
 Downloading solution templates is useful if you want to modify these templates or add your own. See below for instructions on writing your own solution templates.
 
-### Check your answers (with command line arguments)
+### Check your answers (using command line arguments)
 
 eulercli can also be used to check answers:
 
@@ -84,7 +84,7 @@ eulercli can also be used to check answers:
 $ eulercli check 1 <answer>
 Congratulations, <answer> is the correct answer to problem 1!\n
 ```
-### Check your answers (with pipes)
+### Check your answers (using pipes)
 
 You can also pipe the results of your solution program directly to eulercli for answer-checking.  eulercli will echo your program's output to stdout and check it for the correct answer when your program terminates:
 
