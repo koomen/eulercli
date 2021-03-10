@@ -3,6 +3,8 @@ package util
 import (
 	"crypto/md5"
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"regexp"
 	"strings"
 
@@ -57,9 +59,30 @@ func getProblemText(problemNum int) (string, error) {
 	return formattedProblemText, nil
 }
 
+func getSolutionsText() (string, error) {
+	resp, err := http.Get(consts.SolutionsTextURL)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	raw, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	return string(raw), nil
+}
+
+// getAnswer - extract problem answer from https://github.com/luckytoilet/projecteuler-solutions
+// We download answer data on-the-fly in order to avoid breaking the Project Euler
+// rules about publishing solutions
 func getAnswer(problemNum int) (string, error) {
+	solutionsText, err := getSolutionsText()
+	if err != nil {
+		return "", err
+	}
+
 	re := regexp.MustCompile(`(?m:^[0-9]+.\s+)`)
-	split := re.Split(consts.SolutionsText, -1)
+	split := re.Split(solutionsText, -1)
 	largestSupportedProblemNum := len(split) - 1
 
 	if problemNum > largestSupportedProblemNum || problemNum < 1 {

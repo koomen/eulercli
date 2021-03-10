@@ -38,9 +38,8 @@ const MissingAnswerMD5 = "?"
 //go:embed assets/project_euler_problems.txt
 var ProblemsText string
 
-// SolutionsText - Embedded document with many Project Euler solutions
-//go:embed assets/Solutions.md
-var SolutionsText string
+// SolutionsTextURL - URL of some problem solutions collected by LuckyToilet
+const SolutionsTextURL = "https://raw.githubusercontent.com/luckytoilet/projecteuler-solutions/master/Solutions.md"
 
 // TempDirPath - path of a directory used to store temporary files
 const TempDirPath = "/tmp/eulercli"
