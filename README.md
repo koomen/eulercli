@@ -42,7 +42,7 @@ we get 3, 5, 6 and 9. The sum of these multiples is 23.
 Find the sum of all the multiples of 3 or 5 below 1000.
 ```
 
-It will also display the answer to many problems, hashed using MD5.
+It will also display the answer to many problems, hashed using [MD5](https://en.wikipedia.org/wiki/MD5).
 
 ```sh
 $ eulercli answer 1
@@ -55,11 +55,12 @@ eulercli uses the go's [`text/template` package](https://golang.org/pkg/text/tem
 
 ```sh
 $ eulercli generate 25 --language julia
-julia template not found in ./templates directory
-Using template: https://github.com/koomen/eulercli/raw/main/templates/julia/solution.jl
-Generated boilerplate julia solution for problem 25:
-    ./julia/euler25/solution.jl
+Writing generated solution files to ./julia
+  Wrote file ./julia/src/euler0025/solution.jl
+Have fun!
 ```
+
+### Download solution program template files
 
 eulercli looks for solution template files in `./eulercli_templates`.  If this directory does not exist or if appropriate template files aren't found inside it, they can be downloaded on-the-fly from this github repository.
 
@@ -75,8 +76,7 @@ Successfully pulled template solution files to eulercli_templates
 
 Downloading solution templates is useful if you want to modify these templates or add your own. See below for instructions on writing your own solution templates.
 
-
-### Check your answer
+### Check your answers (with command line arguments)
 
 eulercli can also be used to check answers:
 
@@ -84,6 +84,7 @@ eulercli can also be used to check answers:
 $ eulercli check 1 <answer>
 Congratulations, <answer> is the correct answer to problem 1!\n
 ```
+### Check your answers (with pipes)
 
 You can also pipe the results of your solution program directly to eulercli for answer-checking.  eulercli will echo your program's output to stdout and check it for the correct answer when your program terminates:
 
@@ -124,10 +125,44 @@ If the correct answer is not found in your program's output, you'll see:
 ```sh
 Failed to find correct answer for problem 1 in input.
 ```
+
+### Adding your own solution program templates
+
+eulercli can use any template files in `./eulercli_templates` to generate solution programs. 
+
+If you'd like to create templates for a new language or modify the templates for an existing language, you can do so by saving them in the `./eulercli_templates/<language>` directory.  
+
+Template solution files and filenames can include [`text/template` package](https://golang.org/pkg/text/template/) directives with the following fields:
+
+- `{{.ProblemNum}}` - the problem number (e.g. "42")
+- `{{.PaddedProblemNum}}` - the problem number, padded with 0s (e.g. "0042")
+- `{{.ProblemText}}` - the problem text (e.g. "The nth term of the sequence of triangle...")
+- `{{.Answer}}` - The correct answer to the problem (e.g. "123")
+- `{{.AnswerMD5}}` - The correct answer to the problem, hashed using [MD5](https://en.wikipedia.org/wiki/MD5) (e.g. "ba1f2511fc30423bdbb183fe33f3dd0f")
+
+For example, calling
+
+```sh
+$ eulercli generate 42 --langauge julia
+```
+
+will render the following template file
+
+```
+./eulercli_templates/julia/src/euler{{.PaddedProblemNum}}/solution.jl
+```
+
+to the target output file
+
+```
+./julia/src/euler0042/solution.jl
+```
+
+If you find ways to improve existing template files or create useful new template files for an as-yet-unsupported language, consider [contributing to this project](#contributing)
+
 ## Contributing
 
 Code contributions to eulercli are encouraged and appreciated! If you'd like to contribute, clone this repository, commit your proposed changes, and create a pull request in this repository.
-
 
 ## Acknowledgements
 
