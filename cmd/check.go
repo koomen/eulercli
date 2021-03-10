@@ -26,7 +26,7 @@ var checkCmd = &cobra.Command{
 		"can pipe the output of your solution program to euler check, e.g.:\n\n" +
 		"     julia solution.jl | euler check 42\n\n" +
 		"if neither the answer or the problem number are specified, euler will " +
-		"scan stdin for both parameters, matching e.g. \"problem 25\" or \"Problem 25\"" +
+		"scan stdin for both arguments, matching e.g. \"problem 25\" or \"Problem 25\"" +
 		"for problem 25"),
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) > 2 {
@@ -41,7 +41,7 @@ var checkCmd = &cobra.Command{
 		var problemNum int
 		var answer, input string
 
-		// Store command line parameters (if present) in the appropriate variables
+		// Store command line arguments (if present) in the appropriate variables
 		if len(args) >= 1 {
 			problemNum, _ = strconv.Atoi(args[0])
 			if len(args) == 2 {
@@ -49,12 +49,12 @@ var checkCmd = &cobra.Command{
 			}
 		}
 
-		// Extract missing parameters from stdin
+		// Extract missing arguments from stdin
 		if len(args) <= 1 {
 			if len(args) == 0 {
-				fmt.Fprintf(cmd.OutOrStdout(), "No parameters detected. Scanning stdin for problem number and correct answer...\n")
+				fmt.Fprintf(cmd.OutOrStdout(), "Scanning stdin for problem number and correct answer...\n")
 			} else {
-				fmt.Fprintf(cmd.OutOrStdout(), "No answer parameter detected. Scanning stdin for correct answer...\n")
+				fmt.Fprintf(cmd.OutOrStdout(), "Scanning stdin for correct answer...\n")
 			}
 
 			fmt.Fprintf(cmd.OutOrStdout(), "-------------------------------------------------------------------------------\n\n\n")

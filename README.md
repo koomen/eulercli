@@ -89,7 +89,7 @@ You can also pipe the results of your solution program directly to eulercli for 
 
 ```sh
 $ julia solution.jl | eulercli check
-No parameters detected. Scanning stdin for problem number and correct answer...
+Scanning stdin for problem number and correct answer...
 -------------------------------------------------------------------------------
 
 
