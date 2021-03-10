@@ -107,7 +107,8 @@ Obtained solution <answer>
 
 -------------------------------------------------------------------------------
 Extracted problem number 1 from input
-Detected answer <answer> in input. Congratulations, this is the correct answer to problem 1!
+Detected answer <answer> in input. 
+Congratulations, this is the correct answer to problem 1!
 ```
 
 How does this work? eulercli scans the output of your solution program.  
