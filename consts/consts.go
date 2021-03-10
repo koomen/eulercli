@@ -17,7 +17,7 @@ const (
 )
 
 // CLIName - default name of the eulercli executable
-const CLIName = "euler"
+const CLIName = "eulercli"
 
 // ConfigFile - config filename
 const ConfigFile = "eulercli_cfg"
