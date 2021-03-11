@@ -30,6 +30,7 @@ Pkg.activate("../projecteulerenv")
 
 using BenchmarkTools
 using Profile
+using Test
 
 # Solution code
 
@@ -38,7 +39,10 @@ using Profile
 
 Solve the problem
 """
-function solve()
+function solve(verbose::Bool=false)
+    if verbose
+        print("Computing solution...\n")
+    end
     return 0
 end
 
@@ -54,6 +58,6 @@ elseif "--profile" in ARGS || "-p" in ARGS
     Profile.print(combine=true, sortedby=:count, mincount=5, maxdepth=8)
 else
     println("Solving project euler problem {{.ProblemNum}}...")
-    solution = solve()
+    solution = solve(true)
     println("Obtained solution $(solution)")
 end
