@@ -144,7 +144,7 @@ Template solution files and filenames can include [`text/template` package](http
 For example, calling
 
 ```sh
-$ eulercli generate 42 --langauge julia
+$ eulercli generate 42 --language julia
 ```
 
 will render the following template file
