@@ -26,7 +26,7 @@ Options:
 
 # Activate the projecteuler package and add/import useful packages
 import Pkg
-Pkg.activate("../projecteulerenv")
+Pkg.activate("../../projecteulerenv")
 
 using BenchmarkTools
 using Profile
