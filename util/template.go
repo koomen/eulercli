@@ -3,10 +3,10 @@ package util
 import (
 	"bytes"
 	"fmt"
-	"html/template"
 	"io"
 	"os"
 	"path/filepath"
+	"text/template"
 )
 
 // renderToString - Takes a template string and data instance and returns a

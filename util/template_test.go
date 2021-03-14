@@ -30,6 +30,14 @@ func TestRenderToString(t *testing.T) {
 
 	_, err2 := renderToString(badTemplateStr, problem)
 	assert.Error(t, err2)
+
+	// Ensure that HTML characters are not esacaped
+
+	templateStr2 := "for n := 0; n < 10; n++ {"
+	got, err = renderToString(templateStr2, problem)
+	assert.NoError(t, err)
+	assert.Equal(t, templateStr2, got)
+
 }
 
 func TestRenderToFile(t *testing.T) {
