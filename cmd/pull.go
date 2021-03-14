@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"path/filepath"
 
 	"github.com/koomen/eulercli/consts"
 	"github.com/koomen/eulercli/util"
@@ -39,12 +38,14 @@ var pullCmd = &cobra.Command{
 		util.CreateTempDir()
 		defer util.RemoveTempDir()
 
-		owner, repo, branch := "koomen", "eulercli", "main"
+		fmt.Fprintf(
+			cmd.OutOrStdout(),
+			"Downloading templates from %s\n",
+			util.BuildRepoUrl(consts.TemplRepoOwner, consts.TemplRepoName),
+		)
 
-		fmt.Fprintf(cmd.OutOrStdout(), "Downloading templates from https://github.com/%s/%s\n", owner, repo)
-
-		zippedRepo := util.TempPath(fmt.Sprintf("%s-%s.zip", repo, branch))
-		err := util.DownloadRepo(owner, repo, branch, zippedRepo)
+		zippedRepo := util.TempPath(fmt.Sprintf("%s-%s.zip", consts.TemplRepoName, consts.TemplRepoBranch))
+		err := util.DownloadRepo(consts.TemplRepoOwner, consts.TemplRepoName, consts.TemplRepoBranch, zippedRepo)
 		if err != nil {
 			return err
 		}
@@ -59,13 +60,12 @@ var pullCmd = &cobra.Command{
 		}
 
 		// Sync the templates directory to the working directory
-		unzippedRepo := util.TempPath(fmt.Sprintf("%s-%s", repo, branch))
-		tmplDir := filepath.Join(unzippedRepo, "templates")
+		unzippedRepo := util.TempPath(fmt.Sprintf("%s-%s", consts.TemplRepoName, consts.TemplRepoBranch))
 		dst := fmt.Sprintf("%s", consts.DefaultTemplatesDir)
 		if Verbose {
-			fmt.Fprintf(cmd.OutOrStdout(), "Syncing %s to %s\n", tmplDir, dst)
+			fmt.Fprintf(cmd.OutOrStdout(), "Syncing %s to %s\n", unzippedRepo, dst)
 		}
-		err = util.SyncDirs(tmplDir, dst, Overwrite, cmd.InOrStdin(), cmd.OutOrStdout())
+		err = util.SyncDirs(unzippedRepo, dst, Overwrite, cmd.InOrStdin(), cmd.OutOrStdout())
 		if err != nil {
 			return err
 		}

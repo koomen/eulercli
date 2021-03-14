@@ -16,7 +16,7 @@ func TestPullCmd(t *testing.T) {
 
 	var stdout bytes.Buffer
 
-	_, err := os.Stat("eulercli_templates")
+	_, err := os.Stat("eulercli-templates")
 	assert.True(t, os.IsNotExist(err))
 
 	rootCmd.SetArgs([]string{"pull"})
@@ -27,19 +27,19 @@ func TestPullCmd(t *testing.T) {
 	assert.NoError(t, err)
 
 	wants := []string{
-		"Downloading templates from https://github.com/koomen/eulercli\n",
-		"Successfully pulled template solution files to eulercli_templates\n",
+		"Downloading templates from https://github.com/koomen/eulercli-templates\n",
+		"Successfully pulled template solution files to eulercli-templates\n",
 	}
 	for _, want := range wants {
 		assert.Contains(t, string(out), want)
 	}
 
-	assert.DirExists(t, "eulercli_templates")
-	assert.DirExists(t, "eulercli_templates/julia")
-	assert.FileExists(t, "eulercli_templates/julia/initenv.jl")
-	assert.FileExists(t, "eulercli_templates/julia/src/euler{{.PaddedProblemNum}}/solution.jl")
+	assert.DirExists(t, "eulercli-templates")
+	assert.DirExists(t, "eulercli-templates/julia")
+	assert.FileExists(t, "eulercli-templates/julia/initenv.jl")
+	assert.FileExists(t, "eulercli-templates/julia/src/euler{{.PaddedProblemNum}}/solution.jl")
 
-	os.RemoveAll("eulercli_templates")
+	os.RemoveAll("eulercli-templates")
 }
 
 func TestPullCmdVerbose(t *testing.T) {
@@ -49,7 +49,7 @@ func TestPullCmdVerbose(t *testing.T) {
 
 	var stdout bytes.Buffer
 
-	_, err := os.Stat("eulercli_templates")
+	_, err := os.Stat("eulercli-templates")
 	assert.True(t, os.IsNotExist(err))
 
 	rootCmd.SetArgs([]string{"pull", "-v"})
@@ -60,19 +60,19 @@ func TestPullCmdVerbose(t *testing.T) {
 	assert.NoError(t, err)
 
 	wants := []string{
-		"Downloading templates from https://github.com/koomen/eulercli\n",
-		"Unzipping /tmp/eulercli/eulercli-main.zip\n",
-		"Syncing /tmp/eulercli/eulercli-main/templates to eulercli_templates\n",
-		"Successfully pulled template solution files to eulercli_templates\n",
+		"Downloading templates from https://github.com/koomen/eulercli-templates\n",
+		"Unzipping /tmp/eulercli/eulercli-templates-main.zip\n",
+		"Syncing /tmp/eulercli/eulercli-templates-main to eulercli-templates\n",
+		"Successfully pulled template solution files to eulercli-templates\n",
 	}
 	for _, want := range wants {
 		assert.Contains(t, string(out), want)
 	}
 
-	assert.DirExists(t, "eulercli_templates")
-	assert.DirExists(t, "eulercli_templates/julia")
-	assert.FileExists(t, "eulercli_templates/julia/initenv.jl")
-	assert.FileExists(t, "eulercli_templates/julia/src/euler{{.PaddedProblemNum}}/solution.jl")
+	assert.DirExists(t, "eulercli-templates")
+	assert.DirExists(t, "eulercli-templates/julia")
+	assert.FileExists(t, "eulercli-templates/julia/initenv.jl")
+	assert.FileExists(t, "eulercli-templates/julia/src/euler{{.PaddedProblemNum}}/solution.jl")
 
-	os.RemoveAll("eulercli_templates")
+	os.RemoveAll("eulercli-templates")
 }

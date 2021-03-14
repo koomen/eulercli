@@ -13,7 +13,7 @@ func TestGenerateCmd(t *testing.T) {
 	var stdin, stdout bytes.Buffer
 
 	// Assert that templates and rendered files don't exists
-	_, err := os.Stat("eulercli_templates")
+	_, err := os.Stat("eulercli-templates")
 	assert.True(t, os.IsNotExist(err))
 	_, err = os.Stat("julia")
 	assert.True(t, os.IsNotExist(err))
@@ -27,18 +27,18 @@ func TestGenerateCmd(t *testing.T) {
 	assert.NoError(t, err)
 
 	// Assert that templates and rendered files *do* exist
-	assert.DirExists(t, "eulercli_templates")
+	assert.DirExists(t, "eulercli-templates")
 	assert.FileExists(t, "julia/initenv.jl")
 	assert.FileExists(t, "julia/src/euler0001/solution.jl")
-	defer os.RemoveAll("eulercli_templates")
+	defer os.RemoveAll("eulercli-templates")
 	defer os.RemoveAll("julia")
 
 	out, err := ioutil.ReadAll(&stdout)
 	assert.NoError(t, err)
 
 	wants := []string{
-		"Template directory eulercli_templates/julia does not exist. You can use\n\n",
-		"Successfully pulled template solution files to eulercli_templates\n",
+		"Template directory eulercli-templates/julia does not exist. You can use\n\n",
+		"Successfully pulled template solution files to eulercli-templates\n",
 		"julia/initenv.jl\n",
 		"julia/src/euler0001/solution.jl\n",
 	}

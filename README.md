@@ -8,7 +8,7 @@ A CLI for working on [Project Euler](https://projecteuler.net) problems
 The project offers a [series](https://projecteuler.net/archives) of "challenging mathematical/computer programming problems".  For those who learn best by doing, solving these problems is a fun and addictive way to learn a new programming language.
 
 [eulercli](https://github.com/koomen/eulercli) is a command-line interface for working on Project Euler problems. You can use it to
-- Create template solution programs in julia -- `eulercli generate 42 --language julia`
+- Create template solution programs in [julia] or [go] -- `eulercli generate 42 --language julia`
 - Check the output of your solution program -- `julia mysolution.jl | eulercli check`
 - Echo problem text and hashed solutions -- `eulercli problem 42`
 
@@ -62,19 +62,21 @@ Have fun!
 
 ### Download solution program template files
 
-eulercli looks for solution template files in `./eulercli_templates`.  If this directory does not exist or if appropriate template files aren't found inside it, they can be downloaded on-the-fly from this github repository.
+eulercli looks for solution template files in `./eulercli-templates`.  If this directory does not exist or if appropriate template files aren't found inside it, they can be downloaded on-the-fly from the [eulercli-templates] repository.
 
-  You can use `eulercli pull` to trigger this download manually, or update local templates with newer versions if they exist:
+  You can use `eulercli pull` to trigger this download manually:
 
 ```sh
 $ eulercli pull
 Downloading templates from https://github.com/koomen/eulercli
-  Wrote file eulercli_templates/julia/initenv.jl
-  Wrote file eulercli_templates/julia/src/euler{{.PaddedProblemNum}}/solution.jl
-Successfully pulled template solution files to eulercli_templates
+  Wrote file eulercli-templates/julia/initenv.jl
+  Wrote file eulercli-templates/julia/src/euler{{.PaddedProblemNum}}/solution.jl
+Successfully pulled template solution files to eulercli-templates
 ```
 
-Downloading solution templates is useful if you want to modify these templates or add your own. See below for instructions on writing your own solution templates.
+`eulercli pull` will download a fresh copy of these templates into your working directory, or update older template files they already exist.  In that case, you'll be prompted to confirm before any files are overwritten.
+
+Once you've downloaded template files into `./eulercli-templates`, you can modify them or add your own. See the [eulercli-templates] repository for instructions.
 
 ### Check your answers (using command line arguments)
 
@@ -127,40 +129,6 @@ If the correct answer is not found in your program's output, you'll see:
 Failed to find correct answer for problem 1 in input.
 ```
 
-### Adding your own solution program templates
-
-eulercli can use any template files in `./eulercli_templates` to generate solution programs. 
-
-If you'd like to create templates for a new language or modify the templates for an existing language, you can do so by saving them in the `./eulercli_templates/<language>` directory.  
-
-Template solution files and filenames can include [`text/template` package](https://golang.org/pkg/text/template/) directives with the following fields:
-
-- `{{.ProblemNum}}` - the problem number (e.g. "42")
-- `{{.PaddedProblemNum}}` - the problem number, padded with 0s (e.g. "0042")
-- `{{.ProblemText}}` - the problem text (e.g. "The nth term of the sequence of triangle...")
-- `{{.Answer}}` - The correct answer to the problem (e.g. "123")
-- `{{.AnswerMD5}}` - The correct answer to the problem, hashed using [MD5](https://en.wikipedia.org/wiki/MD5) (e.g. "ba1f2511fc30423bdbb183fe33f3dd0f")
-
-For example, calling
-
-```sh
-$ eulercli generate 42 --language julia
-```
-
-will render the following template file
-
-```
-./eulercli_templates/julia/src/euler{{.PaddedProblemNum}}/solution.jl
-```
-
-to the target output file
-
-```
-./julia/src/euler0042/solution.jl
-```
-
-If you find ways to improve existing template files or create useful new template files for an as-yet-unsupported language, consider [contributing to this project](#contributing)
-
 ## Contributing
 
 Code contributions to eulercli are encouraged and appreciated! If you'd like to contribute, clone this repository, commit your proposed changes, and create a pull request in this repository.
@@ -170,3 +138,12 @@ Code contributions to eulercli are encouraged and appreciated! If you'd like to 
 Problem text taken from David Corbin's [Project Euler Offline](https://github.com/davidcorbin/euler-offline/blob/master/project_euler_problems.txt) and Kyle Keen's [Local Euler](http://kmkeen.com/local-euler/) projects.
 
 Problem solutions taken from Bai Li's [projecteuler-solutions](https://github.com/luckytoilet/projecteuler-solutions) repository.
+
+eulercli makes extensive use of [Steve Francia](https://github.com/spf13)'s wonderful [cobra] library
+
+<!-- links -->
+
+[cobra]: https://github.com/spf13/cobra
+[eulercli-templates]: https://github.com/koomen/eulercli-templates
+[go]: https://golang.org
+[julia]: https://julialang.org
