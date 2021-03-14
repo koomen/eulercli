@@ -19,11 +19,8 @@ const (
 // CLIName - default name of the eulercli executable
 const CLIName = "eulercli"
 
-// ConfigFile - config filename
-const ConfigFile = "eulercli_cfg"
-
 // DefaultTemplatesDir - default relative path of the templates directory
-const DefaultTemplatesDir = "eulercli_templates"
+const DefaultTemplatesDir = "eulercli-templates"
 
 // DirPerm - permissions used for created directories
 const DirPerm = 0755
@@ -43,6 +40,15 @@ const SolutionsTextURL = "https://raw.githubusercontent.com/luckytoilet/projecte
 
 // TempDirPath - path of a directory used to store temporary files
 const TempDirPath = "/tmp/eulercli"
+
+// TemplRepoName - name of the template github repository
+const TemplRepoName = "eulercli-templates"
+
+// TemplRepoOwner - owner of the template github repository
+const TemplRepoOwner = "koomen"
+
+// TemplRepoBranch - name of the template github master branch
+const TemplRepoBranch = "main"
 
 // ZippedRepoURL - URL for downloading a zipped copy of the eulercli repo
 const ZippedRepoURL = "https://github.com/koomen/eulercli/archive/main.zip"

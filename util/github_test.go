@@ -7,9 +7,16 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestBuildRepUrl(t *testing.T) {
+	want := "https://github.com/koomen/eulercli"
+	got := BuildRepoUrl("koomen", "eulercli")
+
+	assert.Equal(t, want, got)
+}
+
 func TestBuildRepoArchiveURL(t *testing.T) {
 	want := "https://github.com/koomen/eulercli/archive/main.zip"
-	got := BuildRepoArchiveURL("koomen", "eulercli", "main")
+	got := BuildRepoArchiveUrl("koomen", "eulercli", "main")
 
 	assert.Equal(t, want, got)
 }
@@ -23,7 +30,7 @@ func TestDownloadRepo(t *testing.T) {
 
 	os.Remove(dst)
 
-	err := DownloadRepo("koomen", "eulercli", "main", dst)
+	err := DownloadRepo("koomen", "eulercli-templates", "main", dst)
 	assert.NoError(t, err)
 	defer os.Remove(dst)
 
