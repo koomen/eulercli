@@ -72,7 +72,7 @@ func getSolutionsText() (string, error) {
 	return string(raw), nil
 }
 
-// getAnswer - extract problem answer from https://github.com/luckytoilet/projecteuler-solutions
+// getAnswer - extract problem answer from https://github.com/lucky-bai/projecteuler-solutions
 // We download answer data on-the-fly in order to avoid breaking the Project Euler
 // rules about publishing solutions
 func getAnswer(problemNum int) (string, error) {

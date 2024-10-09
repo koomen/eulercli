@@ -32,11 +32,12 @@ const FilePerm = 0655
 const MissingAnswerMD5 = "?"
 
 // ProblemsText - Embedded document with many Project Euler problems
+//
 //go:embed assets/project_euler_problems.txt
 var ProblemsText string
 
-// SolutionsTextURL - URL of some problem solutions collected by LuckyToilet
-const SolutionsTextURL = "https://raw.githubusercontent.com/luckytoilet/projecteuler-solutions/master/Solutions.md"
+// SolutionsTextURL - URL of some problem solutions collected by lucky-bai
+const SolutionsTextURL = "https://raw.githubusercontent.com/lucky-bai/projecteuler-solutions/refs/heads/master/Solutions.md"
 
 // TempDirPath - path of a directory used to store temporary files
 const TempDirPath = "/tmp/eulercli"

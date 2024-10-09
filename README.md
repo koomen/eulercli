@@ -137,7 +137,7 @@ Code contributions to eulercli are encouraged and appreciated! If you'd like to 
 
 Problem text taken from David Corbin's [Project Euler Offline](https://github.com/davidcorbin/euler-offline/blob/master/project_euler_problems.txt) and Kyle Keen's [Local Euler](http://kmkeen.com/local-euler/) projects.
 
-Problem solutions taken from Bai Li's [projecteuler-solutions](https://github.com/luckytoilet/projecteuler-solutions) repository.
+Problem solutions taken from Bai Li's [projecteuler-solutions](https://github.com/lucky-bai/projecteuler-solutions) repository.
 
 eulercli makes extensive use of [Steve Francia](https://github.com/spf13)'s wonderful [cobra] library
 
